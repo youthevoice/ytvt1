@@ -12,6 +12,7 @@ import SplashScreen from "react-native-splash-screen";
 import AllArticles from "./allArticles";
 import { createStackNavigator, createAppContainer } from "react-navigation";
 import DetailArticle from "./detailArticle";
+import PlayVideo from "./playVideo";
 
 import Orientation from "react-native-orientation";
 
@@ -22,6 +23,9 @@ const Articles = createStackNavigator(
     },
     DetailArticle: {
       screen: DetailArticle
+    },
+    PlayVideo: {
+      screen: PlayVideo
     }
   },
   {

@@ -15,7 +15,7 @@ import {
   AlertIOS
 } from "react-native";
 import { Divider } from "react-native-elements";
-//import PlayVideo from "./playVideo";
+import PlayVideo from "./playVideo";
 //import Modal from "react-native-modal";
 import Fa5 from "react-native-vector-icons/FontAwesome5";
 import Icon from "react-native-vector-icons/Ionicons";
