@@ -9,8 +9,30 @@
 import React, { Component } from "react";
 import { Platform, StyleSheet, Text, View } from "react-native";
 import SplashScreen from "react-native-splash-screen";
+import AllArticles from "./allArticles";
+import { createStackNavigator, createAppContainer } from "react-navigation";
+import DetailArticle from "./detailArticle";
 
 import Orientation from "react-native-orientation";
+
+const Articles = createStackNavigator(
+  {
+    AllArticles: {
+      screen: AllArticles
+    },
+    DetailArticle: {
+      screen: DetailArticle
+    }
+  },
+  {
+    headerMode: "none"
+  },
+  {
+    initialRouteName: "AllArticles"
+  }
+);
+
+const AppContainer = createAppContainer(Articles);
 
 export default class App extends Component {
   componentDidMount() {
@@ -21,11 +43,7 @@ export default class App extends Component {
   }
 
   render() {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>Welcome to React Native!</Text>
-      </View>
-    );
+    return <AppContainer />;
   }
 }
 
