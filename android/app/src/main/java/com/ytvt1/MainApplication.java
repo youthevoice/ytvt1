@@ -3,6 +3,7 @@ package com.ytvt1;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import io.invertase.firebase.RNFirebasePackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -11,6 +12,7 @@ import com.facebook.soloader.SoLoader;
 import org.devio.rn.splashscreen.SplashScreenReactPackage;
 import com.github.yamill.orientation.OrientationPackage;
 import com.brentvatne.react.ReactVideoPackage;
+import co.apptailor.googlesignin.RNGoogleSigninPackage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -27,10 +29,12 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNFirebasePackage(),
             new RNGestureHandlerPackage(),
               new SplashScreenReactPackage(),
               new OrientationPackage(),
-              new ReactVideoPackage()
+              new ReactVideoPackage(),
+              new RNGoogleSigninPackage()
       );
     }
 
