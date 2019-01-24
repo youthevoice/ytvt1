@@ -247,12 +247,16 @@ export default class DetailArticle extends Component {
                 }}
               >
                 <TouchableOpacity onPress={this.pVideo}>
-                  <Icon name="ios-videocam" size={30} />
-                  <Text style={{ paddingVertical: 5 }}> 480P</Text>
+                  <View style={styles.bottomBarItem}>
+                    <Icon name="ios-videocam" size={30} />
+                    <Text style={{ paddingVertical: 5 }}> 480P</Text>
+                  </View>
                 </TouchableOpacity>
                 <TouchableOpacity>
-                  <Icon name="ios-videocam" size={30} />
-                  <Text style={{ paddingVertical: 5 }}> 720P</Text>
+                  <View style={styles.bottomBarItem}>
+                    <Icon name="ios-videocam" size={30} />
+                    <Text style={{ paddingVertical: 5 }}> 720P</Text>
+                  </View>
                 </TouchableOpacity>
 
                 <TouchableOpacity
@@ -260,8 +264,10 @@ export default class DetailArticle extends Component {
                     "https://www.facebook.com/jeevan.examwarrior/posts/403845640359795"
                   )}
                 >
-                  <Icon name="logo-facebook" size={30} />
-                  <Text style={{ paddingVertical: 5 }}> YouTube</Text>
+                  <View style={styles.bottomBarItem}>
+                    <Icon name="logo-facebook" size={30} />
+                    <Text style={{ paddingVertical: 5 }}> Facebook</Text>
+                  </View>
                 </TouchableOpacity>
 
                 <TouchableOpacity
@@ -269,8 +275,10 @@ export default class DetailArticle extends Component {
                     "https://www.youtube.com/watch?v=AEr7NcU8cHw"
                   )}
                 >
-                  <Icon name="logo-youtube" size={30} />
-                  <Text style={{ paddingVertical: 5 }}> YouTube</Text>
+                  <View style={styles.bottomBarItem}>
+                    <Icon name="logo-youtube" size={30} />
+                    <Text style={{ paddingVertical: 5 }}> YouTube</Text>
+                  </View>
                 </TouchableOpacity>
               </View>
             </View>
@@ -389,8 +397,10 @@ export default class DetailArticle extends Component {
                   }}
                 >
                   <TouchableOpacity onPress={this.onQuizCancel}>
-                    <Icon name="ios-alert" size={30} />
-                    <Text style={{ paddingVertical: 5 }}> Cancel</Text>
+                    <View style={styles.bottomBarItem}>
+                      <Icon name="ios-alert" size={30} />
+                      <Text style={{ paddingVertical: 5 }}> Cancel</Text>
+                    </View>
                   </TouchableOpacity>
                   <TouchableOpacity
                     onPress={this.postQuiz(
@@ -399,12 +409,16 @@ export default class DetailArticle extends Component {
                       1
                     )}
                   >
-                    <Icon name="md-share-alt" size={30} />
-                    <Text style={{ paddingVertical: 5 }}> Vote</Text>
+                    <View style={styles.bottomBarItem}>
+                      <Icon name="md-share-alt" size={30} />
+                      <Text style={{ paddingVertical: 5 }}> Vote</Text>
+                    </View>
                   </TouchableOpacity>
                   <TouchableOpacity>
-                    <Icon name="md-chatboxes" size={30} />
-                    <Text style={{ paddingVertical: 5 }}> Results</Text>
+                    <View style={styles.bottomBarItem}>
+                      <Icon name="md-chatboxes" size={30} />
+                      <Text style={{ paddingVertical: 5 }}> Results</Text>
+                    </View>
                   </TouchableOpacity>
                 </View>
               </View>
@@ -515,27 +529,33 @@ export default class DetailArticle extends Component {
                   }}
                 >
                   <TouchableOpacity onPress={this.onQuizCancel}>
-                    <Icon name="ios-alert" size={30} color="#D3D3D3" />
-                    <Text style={{ paddingVertical: 5, color: "#D3D3D3" }}>
-                      Cancel
-                    </Text>
+                    <View style={styles.bottomBarItem}>
+                      <Icon name="ios-alert" size={30} color="#D3D3D3" />
+                      <Text style={{ paddingVertical: 5, color: "#D3D3D3" }}>
+                        Cancel
+                      </Text>
+                    </View>
                   </TouchableOpacity>
                   <TouchableOpacity>
-                    <Icon name="md-share-alt" size={30} color="#D3D3D3" />
-                    <Text style={{ paddingVertical: 5, color: "#D3D3D3" }}>
-                      Vote
-                    </Text>
+                    <View style={styles.bottomBarItem}>
+                      <Icon name="md-share-alt" size={30} color="#D3D3D3" />
+                      <Text style={{ paddingVertical: 5, color: "#D3D3D3" }}>
+                        Vote
+                      </Text>
+                    </View>
                   </TouchableOpacity>
                   <TouchableOpacity>
-                    <Icon
-                      name="md-chatboxes"
-                      size={30}
-                      style={{ color: "#D3D3D3" }}
-                    />
-                    <Text style={{ paddingVertical: 5, color: "#D3D3D3" }}>
-                      {" "}
-                      Quiz
-                    </Text>
+                    <View style={styles.bottomBarItem}>
+                      <Icon
+                        name="md-chatboxes"
+                        size={30}
+                        style={{ color: "#D3D3D3" }}
+                      />
+                      <Text style={{ paddingVertical: 5, color: "#D3D3D3" }}>
+                        {" "}
+                        Quiz
+                      </Text>
+                    </View>
                   </TouchableOpacity>
                 </View>
               </View>
@@ -554,12 +574,16 @@ export default class DetailArticle extends Component {
                 }}
               >
                 <TouchableOpacity onPress={this.pVideo}>
-                  <Fa5 name="microphone-alt" size={30} />
-                  <Text style={{ paddingVertical: 5 }}> YTV VOICE</Text>
+                  <View style={styles.bottomBarItem}>
+                    <Icon name="md-megaphone" size={30} />
+                    <Text style={{ paddingVertical: 5 }}> YTV VOICE</Text>
+                  </View>
                 </TouchableOpacity>
                 <TouchableOpacity>
-                  <Icon name="ios-videocam" size={30} />
-                  <Text style={{ paddingVertical: 5 }}> TWITTER</Text>
+                  <View style={styles.bottomBarItem}>
+                    <Icon name="logo-twitter" size={30} />
+                    <Text style={{ paddingVertical: 5 }}> TWITTER</Text>
+                  </View>
                 </TouchableOpacity>
 
                 <TouchableOpacity
@@ -567,8 +591,10 @@ export default class DetailArticle extends Component {
                     "https://www.facebook.com/jeevan.examwarrior/posts/403845640359795"
                   )}
                 >
-                  <Icon name="logo-facebook" size={30} />
-                  <Text style={{ paddingVertical: 5 }}> FACEBOOK</Text>
+                  <View style={styles.bottomBarItem}>
+                    <Icon name="logo-facebook" size={30} />
+                    <Text style={{ paddingVertical: 5 }}> FACEBOOK</Text>
+                  </View>
                 </TouchableOpacity>
 
                 <TouchableOpacity
@@ -576,8 +602,10 @@ export default class DetailArticle extends Component {
                     "https://www.youtube.com/watch?v=AEr7NcU8cHw"
                   )}
                 >
-                  <Icon name="logo-youtube" size={30} />
-                  <Text style={{ paddingVertical: 5 }}> YOUTUBE</Text>
+                  <View style={styles.bottomBarItem}>
+                    <Icon name="logo-youtube" size={30} />
+                    <Text style={{ paddingVertical: 5 }}> YOUTUBE</Text>
+                  </View>
                 </TouchableOpacity>
               </View>
             </View>
@@ -650,5 +678,9 @@ const styles = StyleSheet.create({
     color: "#fff",
     paddingLeft: 5,
     letterSpacing: 2
+  },
+  bottomBarItem: {
+    alignItems: "center",
+    justifyContent: "center"
   }
 });
