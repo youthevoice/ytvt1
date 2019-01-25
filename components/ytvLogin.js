@@ -20,8 +20,18 @@ import Fa5 from "react-native-vector-icons/FontAwesome5";
 //import images from "./imageBase64";
 import Icon from "react-native-vector-icons/Ionicons";
 import { RectButton, BorderlessButton } from "react-native-gesture-handler";
+import GS from "./gLogin";
+import FbLogin from "./fbLogin";
+import Tshare1 from "./aShare";
+import Ph from "./phLogin";
 
 export default class ytvLogin extends Component {
+  _onPressPLogin = articleId => {
+    this.props.navigation.navigate("PLogin", {
+      articleID: ""
+    });
+  };
+
   render() {
     // const { navigation } = this.props;
     //const detailData = navigation.getParam("datailData", {});
@@ -39,13 +49,45 @@ export default class ytvLogin extends Component {
             </View>
           </TouchableOpacity>
           <View>
-            <BorderlessButton
-            //  onPress={() => this.props.navigation.toggleDrawer()}
-            >
-              <Icon name="ios-search" color="#ffffff" size={30} />
-            </BorderlessButton>
+            <Text style={styles.h1w}>YTV Login</Text>
           </View>
+          <View />
         </View>
+        <ScrollView>
+          <View style={styles.card}>
+            <TouchableOpacity
+              onPress={this._onPressPLogin}
+              style={styles.cardHeader}
+            >
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <Fa5 name={"mobile-alt"} size={20} />
+                <Text style={styles.h1}>. Login with Phone</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.card}>
+            <TouchableOpacity
+              //onPress={() => this.props.navigation.goBack()}
+              style={styles.cardHeader}
+            >
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <Fa5 name={"google"} size={20} />
+                <Text style={styles.h1}>. Login with Google</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.card}>
+            <TouchableOpacity
+              //onPress={() => this.props.navigation.goBack()}
+              style={styles.cardHeader}
+            >
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <Fa5 name={"facebook-f"} size={20} />
+                <Text style={styles.h1}>. Login with Facebook</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
       </SafeAreaView>
     );
   }
@@ -79,7 +121,9 @@ const styles = StyleSheet.create({
   },
   cardHeader: {
     fontSize: 18,
-    padding: 5,
+
+    paddingHorizontal: 15,
+    paddingVertical: 30,
     color: "#bf360c",
     fontWeight: "bold"
   },
@@ -109,6 +153,20 @@ const styles = StyleSheet.create({
     shadowOpacity: 1.0
   },
   logo: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#fff",
+    paddingLeft: 5,
+    letterSpacing: 2
+  },
+  h1: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#bf360c",
+    paddingLeft: 5,
+    letterSpacing: 2
+  },
+  h1w: {
     fontSize: 20,
     fontWeight: "bold",
     color: "#fff",

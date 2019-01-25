@@ -13,10 +13,10 @@ import AllArticles from "./allArticles";
 import { createStackNavigator, createAppContainer } from "react-navigation";
 import DetailArticle from "./detailArticle";
 import PlayVideo from "./playVideo";
-import GS from "./gLogin";
-import FbLogin from "./fbLogin";
+import GLogin from "./gLogin";
+import FLogin from "./fbLogin";
 import Tshare1 from "./aShare";
-import Ph from "./phLogin";
+import PLogin from "./phLogin";
 import YtvLogin from "./ytvLogin";
 
 import Orientation from "react-native-orientation";
@@ -31,6 +31,15 @@ const Articles = createStackNavigator(
     },
     PlayVideo: {
       screen: PlayVideo
+    },
+    PLogin: {
+      screen: PLogin
+    },
+    GLogin: {
+      screen: GLogin
+    },
+    FLogin: {
+      screen: FLogin
     }
   },
   {
@@ -52,7 +61,7 @@ export default class App extends Component {
   }
 
   render() {
-    return <YtvLogin />;
+    return <AppContainer />;
   }
 }
 
