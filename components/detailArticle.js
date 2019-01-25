@@ -48,12 +48,15 @@ export default class DetailArticle extends Component {
   Separator = () => <View style={styles.separator} />;
 
   openUrl = url => () => {
-    Linking.canOpenURL(url)
+    const FANPAGE_ID = url;
+    const FANPAGE_URL_FOR_APP = `fb://page/jeevan.examwarrior/${FANPAGE_ID}`;
+    const FANPAGE_URL_FOR_BROWSER = `https://fb.com/jeevan.examwarrior/${FANPAGE_ID}`;
+    Linking.canOpenURL(FANPAGE_URL_FOR_APP)
       .then(supported => {
         if (!supported) {
-          console.log("Can't handle url: " + url);
+          return Linking.openURL(FANPAGE_URL_FOR_BROWSER);
         } else {
-          return Linking.openURL(url);
+          return Linking.openURL(FANPAGE_URL_FOR_APP);
         }
       })
       .catch(err => console.error("An error occurred", err));
@@ -260,9 +263,9 @@ export default class DetailArticle extends Component {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  onPress={this.openUrl(
-                    "https://www.facebook.com/jeevan.examwarrior/posts/403845640359795"
-                  )}
+                  onPress={this.openUrl("403845640359795")}
+                  // "fb://page/jeevan.examwarrior/posts/403845640359795"
+                  // "https://m.facebook.com/jeevan.examwarrior/posts/403845640359795"
                 >
                   <View style={styles.bottomBarItem}>
                     <Icon name="logo-facebook" size={30} />
