@@ -19,6 +19,9 @@ import co.apptailor.googlesignin.RNGoogleSigninPackage;
 import cl.json.RNSharePackage;
 import cl.json.ShareApplication;
 import com.oblador.vectoricons.VectorIconsPackage;
+import com.rnim.rn.audio.ReactNativeAudioPackage;
+import com.zmxv.RNSound.RNSoundPackage;
+import com.rnfs.RNFSPackage;
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
@@ -58,7 +61,10 @@ public class MainApplication extends Application implements ReactApplication,  S
               new ReactVideoPackage(),
               new RNGoogleSigninPackage(),
               new RNSharePackage(),
-              new VectorIconsPackage()
+              new VectorIconsPackage(),
+              new ReactNativeAudioPackage(),
+              new RNSoundPackage(),
+              new RNFSPackage()
              // new TwitterSigninPackage()
       );
     }

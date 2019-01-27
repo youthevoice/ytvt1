@@ -23,6 +23,8 @@ import firebase from "react-native-firebase";
 
 import Orientation from "react-native-orientation";
 
+import Audio from "./audio";
+
 const Articles = createStackNavigator(
   {
     AllArticles: {
@@ -84,7 +86,7 @@ export default class App extends Component {
   }
 
   render() {
-    return <AppContainer />;
+    return <Audio />;
   }
 }
 

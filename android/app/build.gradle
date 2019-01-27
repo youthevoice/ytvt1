@@ -161,6 +161,9 @@ dependencies {
     implementation project(':react-native-firebase')
     implementation project(':react-native-share')
     implementation project(':react-native-vector-icons')
+    implementation project(':react-native-audio')
+    implementation project(':react-native-sound')
+    implementation project(':react-native-fs')
     //implementation project(':react-native-twitter-signin')
 }
 
