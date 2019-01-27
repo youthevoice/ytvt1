@@ -24,6 +24,7 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
 import com.facebook.reactnative.androidsdk.FBSDKPackage;
 import com.facebook.appevents.AppEventsLogger;
+// com.goldenowl.twittersignin.TwitterSigninPackage;
 
 
 import java.util.Arrays;
@@ -58,6 +59,7 @@ public class MainApplication extends Application implements ReactApplication,  S
               new RNGoogleSigninPackage(),
               new RNSharePackage(),
               new VectorIconsPackage()
+             // new TwitterSigninPackage()
       );
     }
 

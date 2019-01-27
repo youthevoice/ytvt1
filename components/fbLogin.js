@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { View, Button } from "react-native";
 import { LoginButton, AccessToken, LoginManager } from "react-native-fbsdk";
 
-export default class Login extends Component {
+export default class FbLogin extends Component {
   loginFacebook = () => {
     LoginManager.logInWithReadPermissions(["public_profile"]).then(
       function(result) {
@@ -11,6 +11,9 @@ export default class Login extends Component {
           console.log("Login cancelled");
         } else {
           alert("Login success");
+          AccessToken.getCurrentAccessToken().then(data => {
+            console.log(data.accessToken.toString());
+          });
           console.log(
             "Login success with permissions: " +
               result.grantedPermissions.toString()

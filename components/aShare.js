@@ -62,6 +62,21 @@ export default class Tshare1 extends Component {
       .catch(err => console.error("An error occurred", err));
   };
 
+  openFUrl = url => () => {
+    const FANPAGE_ID = url;
+    const FANPAGE_URL_FOR_APP = `fb://page/jeevan.examwarrior/${FANPAGE_ID}`;
+    const FANPAGE_URL_FOR_BROWSER = `https://fb.com/jeevan.examwarrior/${FANPAGE_ID}`;
+    Linking.canOpenURL(FANPAGE_URL_FOR_APP)
+      .then(supported => {
+        if (!supported) {
+          return Linking.openURL(FANPAGE_URL_FOR_BROWSER);
+        } else {
+          return Linking.openURL(FANPAGE_URL_FOR_APP);
+        }
+      })
+      .catch(err => console.error("An error occurred", err));
+  };
+
   render() {
     // const { navigation } = this.props;
     //const detailData = navigation.getParam("datailData", {});
@@ -70,9 +85,7 @@ export default class Tshare1 extends Component {
       <SafeAreaView style={styles.container}>
         <StatusBar barStyle="dark-content" backgroundColor="#bf360c" />
         <View style={styles.headerBar}>
-          <TouchableOpacity
-          //onPress={() => this.props.navigation.goBack()}
-          >
+          <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               <Icon name="ios-arrow-round-back" color="#fff" size={30} />
               <Text style={styles.logo}>Back...</Text>
@@ -80,7 +93,7 @@ export default class Tshare1 extends Component {
           </TouchableOpacity>
           <View>
             <BorderlessButton
-            //  onPress={() => this.props.navigation.toggleDrawer()}
+              onPress={() => this.props.navigation.toggleDrawer()}
             >
               <Icon name="ios-search" color="#ffffff" size={30} />
             </BorderlessButton>
@@ -110,16 +123,14 @@ export default class Tshare1 extends Component {
             style={styles.bottomBarItem}
             onPress={() => this.onShare()}
           >
-            <Fa5 name={"whatsapp"} size={40} />
+            <Fa5 name={"whatsapp"} size={40} color="#25D366" />
             <Text style={{ paddingVertical: 5 }}> WHATSAPP</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.bottomBarItem}
-            onPress={this.openUrl(
-              "https://www.facebook.com/jeevan.examwarrior/posts/403845640359795"
-            )}
+            onPress={this.openFUrl("403845640359795")}
           >
-            <Fa5 name={"facebook"} size={40} />
+            <Fa5 name={"facebook"} size={40} color="#3b5998" />
             <Text style={{ paddingVertical: 5 }}> FACEBOOK</Text>
           </TouchableOpacity>
           <TouchableOpacity
@@ -128,7 +139,7 @@ export default class Tshare1 extends Component {
               "https://twitter.com/ew8dotcom/status/1084291751374962689"
             )}
           >
-            <Fa5 name={"twitter"} size={40} />
+            <Fa5 name={"twitter"} size={40} color="#38A1F3" />
             <Text style={{ paddingVertical: 5 }}> TWITTER</Text>
           </TouchableOpacity>
         </View>
@@ -143,15 +154,15 @@ export default class Tshare1 extends Component {
             style={styles.bottomBarItem}
             onPress={() => this.onShare1()}
           >
-            <Fa5 name={"envelope"} size={40} />
+            <Fa5 name={"envelope"} size={40} color="#880e4f" />
             <Text style={{ paddingVertical: 5 }}> EMAIL</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.bottomBarItem}>
-            <Fa5 name={"google-plus"} size={40} />
+            <Fa5 name={"google-plus"} size={40} color="#DD4B39" />
             <Text style={{ paddingVertical: 5 }}> GOOGLEPLUS</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.bottomBarItem}>
-            <Fa5 name={"instagram"} size={40} />
+            <Fa5 name={"instagram"} size={40} color="#3f729b" />
             <Text style={{ paddingVertical: 5 }}> INSTAGRAM</Text>
           </TouchableOpacity>
         </View>

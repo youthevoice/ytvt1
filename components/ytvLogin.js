@@ -26,23 +26,33 @@ import Tshare1 from "./aShare";
 import Ph from "./phLogin";
 
 export default class ytvLogin extends Component {
-  _onPressPLogin = articleId => {
+  _onPressPLogin = articleId => () => {
     this.props.navigation.navigate("PLogin", {
-      articleID: ""
+      articleID: articleId
+    });
+  };
+
+  _onPressGLogin = articleId => () => {
+    this.props.navigation.navigate("GLogin", {
+      articleID: articleId
+    });
+  };
+
+  _onPressFLogin = articleId => () => {
+    this.props.navigation.navigate("FLogin", {
+      articleID: articleId
     });
   };
 
   render() {
-    // const { navigation } = this.props;
-    //const detailData = navigation.getParam("datailData", {});
+    const { navigation } = this.props;
+    const articleID = navigation.getParam("articleID", "");
 
     return (
       <SafeAreaView style={styles.container}>
         <StatusBar barStyle="dark-content" backgroundColor="#bf360c" />
         <View style={styles.headerBar}>
-          <TouchableOpacity
-          //onPress={() => this.props.navigation.goBack()}
-          >
+          <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               <Icon name="ios-arrow-round-back" color="#fff" size={30} />
               <Text style={styles.logo}>Back...</Text>
@@ -56,7 +66,7 @@ export default class ytvLogin extends Component {
         <ScrollView>
           <View style={styles.card}>
             <TouchableOpacity
-              onPress={this._onPressPLogin}
+              onPress={this._onPressPLogin(articleID)}
               style={styles.cardHeader}
             >
               <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -67,7 +77,7 @@ export default class ytvLogin extends Component {
           </View>
           <View style={styles.card}>
             <TouchableOpacity
-              //onPress={() => this.props.navigation.goBack()}
+              onPress={this._onPressGLogin(articleID)}
               style={styles.cardHeader}
             >
               <View style={{ flexDirection: "row", alignItems: "center" }}>

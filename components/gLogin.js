@@ -5,7 +5,8 @@ import {
   Text,
   View,
   Alert,
-  Button
+  Button,
+  AsyncStorage
 } from "react-native";
 import {
   GoogleSignin,
@@ -14,13 +15,15 @@ import {
 } from "react-native-google-signin";
 
 import Button1 from "react-native-button";
+import Loader from "./loader";
 
 export default class GS extends Component {
   constructor(props) {
     super(props);
     this.state = {
       userInfo: null,
-      error: null
+      error: null,
+      loadL: false
     };
   }
 
@@ -51,9 +54,18 @@ export default class GS extends Component {
 
   _signIn = async () => {
     try {
-      // await GoogleSignin.hasPlayServices();
+      // this._signOut();
+      //await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
       this.setState({ userInfo, error: null });
+      console.log(userInfo);
+
+      await AsyncStorage.setItem("isLoggedIn", "true");
+      await AsyncStorage.setItem("loggedinMethod", "google");
+      await AsyncStorage.setItem("loggedinTime", new Date());
+      Alert.alert("Hello about to call navigation");
+      this.props.navigation.navigate("AllArticles");
+      console.log("google llloohinnn");
     } catch (error) {
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
         // sign in was cancelled
@@ -76,7 +88,7 @@ export default class GS extends Component {
     try {
       await GoogleSignin.revokeAccess();
       await GoogleSignin.signOut();
-
+      Alert.alert("signed out successfullyyyy");
       this.setState({ userInfo: null, error: null });
     } catch (error) {
       this.setState({
@@ -86,6 +98,9 @@ export default class GS extends Component {
   };
 
   render() {
+    const { navigation } = this.props;
+    const articleID = navigation.getParam("articleID", "");
+
     return (
       <View>
         <Button1

@@ -12,7 +12,8 @@ import {
   Image,
   ScrollView,
   Linking,
-  AlertIOS
+  AlertIOS,
+  AsyncStorage
 } from "react-native";
 import { Divider } from "react-native-elements";
 import PlayVideo from "./playVideo";
@@ -39,8 +40,29 @@ export default class DetailArticle extends Component {
 
       quiz2: {},
       quiz3: {},
-      quiz4: {}
+      quiz4: {},
+      isLoggedIn: false,
+      isAuthenticated: false,
+      upVote: false,
+      dVote: false,
+      upVoteColor: "#9e9e9e",
+      dwVoteColor: "#9e9e9e"
     };
+  }
+
+  async componentDidMount() {
+    try {
+      const isLoggedIn = await AsyncStorage.getItem("isLoggedIn");
+      console.log("isLoggedIn", isLoggedIn);
+
+      if (isLoggedIn) {
+        this.setState({
+          isAuthenticated: true
+        });
+      }
+    } catch (error) {
+      console.log("Error while storing the token");
+    }
   }
 
   _keyExtractor = (item, index) => item.id;
@@ -57,6 +79,18 @@ export default class DetailArticle extends Component {
           return Linking.openURL(FANPAGE_URL_FOR_BROWSER);
         } else {
           return Linking.openURL(FANPAGE_URL_FOR_APP);
+        }
+      })
+      .catch(err => console.error("An error occurred", err));
+  };
+
+  openYUrl = url => () => {
+    Linking.canOpenURL(url)
+      .then(supported => {
+        if (!supported) {
+          console.log("Can't handle url: " + url);
+        } else {
+          return Linking.openURL(url);
         }
       })
       .catch(err => console.error("An error occurred", err));
@@ -174,6 +208,60 @@ export default class DetailArticle extends Component {
       });
   };
 
+  async retrieveSessionToken() {
+    try {
+      const token = await AsyncStorage.getItem("loginToken");
+      if (isLoggedIn !== null) {
+        console.log("Session token", token);
+        return token;
+      }
+    } catch (error) {
+      console.log("Error while storing the token");
+    }
+  }
+
+  _upVote = articleId => () => {
+    if (!this.state.isAuthenticated) {
+      this.props.navigation.navigate("YtvLogin", {
+        articleID: articleId
+      });
+    } else {
+      uvS = !this.state.upVote;
+      uvC = uvS ? "#42a5f5" : "#9e9e9e";
+
+      this.setState({
+        upVote: uvS,
+        dwVote: false,
+        upVoteColor: uvC,
+        dwVoteColor: "#9e9e9e"
+      });
+    }
+  };
+
+  _dwVote = articleId => () => {
+    if (!this.state.isAuthenticated) {
+      this.props.navigation.navigate("YtvLogin", {
+        articleID: articleId
+      });
+    } else {
+      dvS = !this.state.dwVote;
+      dvC = dvS ? "#424242" : "#9e9e9e";
+
+      this.setState({
+        upVote: false,
+        dwVote: dvS,
+        upVoteColor: "#9e9e9e",
+        dwVoteColor: dvC
+      });
+    }
+  };
+
+  _ytvShare = articleId => () => {
+    this.props.navigation.navigate("YtvShare", {
+      articleID: articleId
+    });
+  };
+
   render() {
     const { navigation } = this.props;
     const detailData = navigation.getParam("datailData", {});
@@ -220,15 +308,25 @@ export default class DetailArticle extends Component {
                   padding: 10
                 }}
               >
-                <TouchableOpacity>
-                  <Icon name="md-thumbs-up" size={30} />
+                <TouchableOpacity onPress={this._upVote(detailData.articleId)}>
+                  <Icon
+                    name="md-thumbs-up"
+                    size={30}
+                    color={this.state.upVoteColor}
+                  />
                   <Text style={{ paddingVertical: 5 }}> 20k</Text>
                 </TouchableOpacity>
-                <TouchableOpacity>
-                  <Icon name="md-thumbs-down" size={30} />
+                <TouchableOpacity onPress={this._dwVote(detailData.articleId)}>
+                  <Icon
+                    name="md-thumbs-down"
+                    size={30}
+                    color={this.state.dwVoteColor}
+                  />
                   <Text style={{ paddingVertical: 5 }}> 20k</Text>
                 </TouchableOpacity>
-                <TouchableOpacity>
+                <TouchableOpacity
+                  onPress={this._ytvShare(detailData.articleId)}
+                >
                   <Icon name="md-share-alt" size={30} />
                   <Text style={{ paddingVertical: 5 }}> 20k</Text>
                 </TouchableOpacity>
@@ -274,7 +372,7 @@ export default class DetailArticle extends Component {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  onPress={this.openUrl(
+                  onPress={this.openYUrl(
                     "https://www.youtube.com/watch?v=AEr7NcU8cHw"
                   )}
                 >
@@ -582,7 +680,11 @@ export default class DetailArticle extends Component {
                     <Text style={{ paddingVertical: 5 }}> YTV VOICE</Text>
                   </View>
                 </TouchableOpacity>
-                <TouchableOpacity>
+                <TouchableOpacity
+                  onPress={this.openYUrl(
+                    "https://twitter.com/jeevan72674854/status/1084291366371377152"
+                  )}
+                >
                   <View style={styles.bottomBarItem}>
                     <Icon name="logo-twitter" size={30} />
                     <Text style={{ paddingVertical: 5 }}> TWITTER</Text>
@@ -601,7 +703,7 @@ export default class DetailArticle extends Component {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  onPress={this.openUrl(
+                  onPress={this.openYUrl(
                     "https://www.youtube.com/watch?v=AEr7NcU8cHw"
                   )}
                 >

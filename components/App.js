@@ -13,11 +13,13 @@ import AllArticles from "./allArticles";
 import { createStackNavigator, createAppContainer } from "react-navigation";
 import DetailArticle from "./detailArticle";
 import PlayVideo from "./playVideo";
-import GLogin from "./gLogin";
-import FLogin from "./fbLogin";
-import Tshare1 from "./aShare";
+import GLogin from "./gfLogin";
+import FbLogin from "./fbfLogin";
+import YtvShare from "./aShare";
 import PLogin from "./phLogin";
 import YtvLogin from "./ytvLogin";
+import Tlogin from "./tfLogin";
+import firebase from "react-native-firebase";
 
 import Orientation from "react-native-orientation";
 
@@ -38,8 +40,14 @@ const Articles = createStackNavigator(
     GLogin: {
       screen: GLogin
     },
-    FLogin: {
-      screen: FLogin
+    FbLogin: {
+      screen: FbLogin
+    },
+    YtvLogin: {
+      screen: YtvLogin
+    },
+    YtvShare: {
+      screen: YtvShare
     }
   },
   {
@@ -53,11 +61,26 @@ const Articles = createStackNavigator(
 const AppContainer = createAppContainer(Articles);
 
 export default class App extends Component {
+  constructor() {
+    super();
+    this.state = {
+      isAnonAuthenticated: false
+    };
+  }
+
   componentDidMount() {
     // do stuff while splash screen is shown
     // After having done stuff (such as async tasks) hide the splash screen
     SplashScreen.hide();
     Orientation.lockToPortrait();
+    firebase
+      .auth()
+      .signInAnonymously()
+      .then(() => {
+        this.setState({
+          isAnonAuthenticated: true
+        });
+      });
   }
 
   render() {
