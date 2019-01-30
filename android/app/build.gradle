@@ -143,6 +143,8 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-sound-player')
+    implementation project(':react-native-camera')
 
     implementation 'com.facebook.android:facebook-android-sdk:4.34.0'
     implementation project(':react-native-fbsdk')
@@ -164,6 +166,10 @@ dependencies {
     implementation project(':react-native-audio')
     implementation project(':react-native-sound')
     implementation project(':react-native-fs')
+    implementation project(':react-native-document-picker')
+    implementation project(':rn-fetch-blob')
+    implementation project(':react-native-file-viewer')
+    implementation project(':react-native-sound-recorder')
     //implementation project(':react-native-twitter-signin')
 }
 

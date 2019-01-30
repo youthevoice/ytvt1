@@ -33,16 +33,16 @@ export default class AudioExample extends Component {
     paused: false,
     stoppedRecording: false,
     finished: false,
-    audioPath: RNFS.DocumentDirectoryPath + "/test.mp4",
+    audioPath: RNFS.DocumentDirectoryPath + "/test.aac",
     hasPermission: undefined
   };
 
   prepareRecordingPath(audioPath) {
     AudioRecorder.prepareRecordingAtPath(audioPath, {
-      SampleRate: 48000,
+      SampleRate: 22050,
       Channels: 1,
-      AudioQuality: "High",
-      AudioEncoding: "mp4",
+      AudioQuality: "Low",
+      AudioEncoding: "aac",
       AudioEncodingBitRate: 32000
     });
   }
@@ -210,8 +210,8 @@ export default class AudioExample extends Component {
     var files = [
       {
         name: "test",
-        filename: "test.mp4",
-        filepath: RNFS.DocumentDirectoryPath + "/test.mp4"
+        filename: "test.aac",
+        filepath: RNFS.DocumentDirectoryPath + "/test.aac"
       }
     ];
 

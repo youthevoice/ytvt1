@@ -1,0 +1,26 @@
+ RNFS.uploadFiles({
+      toUrl: uploadUrl,
+      files: files,
+      method: "POST",
+      headers: {
+        Accept: "application/json"
+      },
+      fields: {
+        hello: "world"
+      },
+      begin: uploadBegin,
+      progress: uploadProgress
+    })
+      .promise.then(response => {
+        if (response.statusCode == 200) {
+          console.log("FILES UPLOADED!"); // response.statusCode, response.headers, response.body
+        } else {
+          console.log("SERVER ERROR");
+        }
+      })
+      .catch(err => {
+        if (err.description === "cancelled") {
+          // cancelled by user
+        }
+        console.log(err);
+      });

@@ -3,6 +3,7 @@ import { Text, View, StyleSheet } from "react-native";
 
 import VideoPlayer from "react-native-video-controls";
 import Orientation from "react-native-orientation";
+var RNFS = require("react-native-fs");
 
 export default class PlayVideo extends Component {
   static navigationOptions = {
@@ -23,10 +24,12 @@ export default class PlayVideo extends Component {
   }
 
   render() {
+    //alert("file://" + RNFS.DocumentDirectoryPath + "/test.mp4");
     return (
       <View style={styles.container}>
         <VideoPlayer
-          source={{ uri: "https://youthevoice.com/v2.mp4" }}
+          source={{ uri: "https://youthevoice.com/test.mp4" }}
+          //source={{ uri: "file://" + RNFS.DocumentDirectoryPath + "/test.mp4" }}
           //title={this.props.title}
           title="Apppuuuu"
           onBack={() => this._back()}

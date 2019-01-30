@@ -4,6 +4,8 @@ import android.app.Application;
 
 import io.invertase.firebase.auth.RNFirebaseAuthPackage;
 import com.facebook.react.ReactApplication;
+import com.johnsonsu.rnsoundplayer.RNSoundPlayerPackage;
+import org.reactnative.camera.RNCameraPackage;
 import com.facebook.reactnative.androidsdk.FBSDKPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import io.invertase.firebase.RNFirebasePackage;
@@ -22,6 +24,10 @@ import com.oblador.vectoricons.VectorIconsPackage;
 import com.rnim.rn.audio.ReactNativeAudioPackage;
 import com.zmxv.RNSound.RNSoundPackage;
 import com.rnfs.RNFSPackage;
+import com.reactnativedocumentpicker.ReactNativeDocumentPicker;
+import com.RNFetchBlob.RNFetchBlobPackage;
+import com.vinzscam.reactnativefileviewer.RNFileViewerPackage;
+import com.kevinresol.react_native_sound_recorder.RNSoundRecorderPackage;
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
@@ -51,6 +57,8 @@ public class MainApplication extends Application implements ReactApplication,  S
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNSoundPlayerPackage(),
+            new RNCameraPackage(),
             new FBSDKPackage(mCallbackManager),
 
             new RNFirebasePackage(),
@@ -64,8 +72,12 @@ public class MainApplication extends Application implements ReactApplication,  S
               new VectorIconsPackage(),
               new ReactNativeAudioPackage(),
               new RNSoundPackage(),
-              new RNFSPackage()
-             // new TwitterSigninPackage()
+              new RNFSPackage(),
+              new ReactNativeDocumentPicker(),
+              new RNFetchBlobPackage(),
+              new RNFileViewerPackage(),
+              new RNSoundRecorderPackage()
+              // new TwitterSigninPackage()
       );
     }
 

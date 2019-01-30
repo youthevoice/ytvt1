@@ -20,10 +20,13 @@ import PLogin from "./phLogin";
 import YtvLogin from "./ytvLogin";
 import Tlogin from "./tfLogin";
 import firebase from "react-native-firebase";
-
+import CVideo from "./commentVideo";
 import Orientation from "react-native-orientation";
-
+import CameraScreen from "./camera";
 import Audio from "./audio";
+import PickFile from "./pickFile";
+import PExample from "./progress";
+import RAudio from "./recordAudio";
 
 const Articles = createStackNavigator(
   {
@@ -50,6 +53,15 @@ const Articles = createStackNavigator(
     },
     YtvShare: {
       screen: YtvShare
+    },
+    CameraScreen: {
+      screen: CameraScreen
+    },
+    CVideo: {
+      screen: CVideo
+    },
+    PickFile: {
+      screen: PickFile
     }
   },
   {
@@ -86,7 +98,7 @@ export default class App extends Component {
   }
 
   render() {
-    return <Audio />;
+    return <AppContainer />;
   }
 }
 

@@ -102,6 +102,14 @@ export default class DetailArticle extends Component {
     });
   };
 
+  commentVideo = () => {
+    this.props.navigation.navigate("PickFile");
+  };
+
+  recordVideo = () => {
+    this.props.navigation.navigate("CameraScreen");
+  };
+
   getArticle = async articleId => {
     this.setState({ loading: true });
 
@@ -353,7 +361,7 @@ export default class DetailArticle extends Component {
                     <Text style={{ paddingVertical: 5 }}> 480P</Text>
                   </View>
                 </TouchableOpacity>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={this.commentVideo}>
                   <View style={styles.bottomBarItem}>
                     <Icon name="ios-videocam" size={30} />
                     <Text style={{ paddingVertical: 5 }}> 720P</Text>
@@ -674,7 +682,7 @@ export default class DetailArticle extends Component {
                   padding: 10
                 }}
               >
-                <TouchableOpacity onPress={this.pVideo}>
+                <TouchableOpacity onPress={this.recordVideo}>
                   <View style={styles.bottomBarItem}>
                     <Icon name="md-megaphone" size={30} />
                     <Text style={{ paddingVertical: 5 }}> YTV VOICE</Text>
