@@ -23,6 +23,7 @@ import Icon from "react-native-vector-icons/Ionicons";
 //import Loader from "./loader";
 import axios from "axios";
 import { RectButton, BorderlessButton } from "react-native-gesture-handler";
+import Loader from "./loader";
 
 export default class DetailArticle extends Component {
   constructor(props) {
@@ -46,11 +47,15 @@ export default class DetailArticle extends Component {
       upVote: false,
       dVote: false,
       upVoteColor: "#9e9e9e",
-      dwVoteColor: "#9e9e9e"
+      dwVoteColor: "#9e9e9e",
+      loadL: false,
+      articleData: "",
+      renderI: false
     };
   }
 
   async componentDidMount() {
+    this._getArticle();
     try {
       const isLoggedIn = await AsyncStorage.getItem("isLoggedIn");
       console.log("isLoggedIn", isLoggedIn);
@@ -64,6 +69,30 @@ export default class DetailArticle extends Component {
       console.log("Error while storing the token");
     }
   }
+
+  _getArticle = () => {
+    /* 1. Navigate to the Details route with params */
+
+    this.setState({ loadL: true });
+
+    axios
+      .get("https://youthevoice.com/getarticles", {
+        params: {
+          articleId: this.props.navigation.getParam("articleId", "")
+        }
+      })
+      .then(res => {
+        console.log(res.data);
+        this.setState({
+          loadL: false,
+          articleData: res.data,
+          renderI: true
+        });
+      })
+      .catch(error => {
+        this.setState({ error, loadL: false });
+      });
+  };
 
   _keyExtractor = (item, index) => item.id;
 
@@ -272,7 +301,8 @@ export default class DetailArticle extends Component {
 
   render() {
     const { navigation } = this.props;
-    const detailData = navigation.getParam("datailData", {});
+    const detailData = this.state.articleData;
+    //navigation.getParam("datailData", {});
     // this.getArticle(articleId);
     // console.log("detaill", detailData);
 
@@ -294,436 +324,443 @@ export default class DetailArticle extends Component {
             </BorderlessButton>
           </View>
         </View>
-        <ScrollView>
-          <View>
-            <View style={styles.card}>
-              <Text style={styles.cardHeader}>
-                {JSON.stringify(detailData.articleHeading)}
-              </Text>
-
-              <Image
-                source={{ uri: detailData.articleImage }}
-                style={styles.cardImage}
-              />
-              <Text style={styles.cardText}>
-                {JSON.stringify(detailData.articleShortDesc)}
-              </Text>
-
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  padding: 10
-                }}
-              >
-                <TouchableOpacity onPress={this._upVote(detailData.articleId)}>
-                  <Icon
-                    name="md-thumbs-up"
-                    size={30}
-                    color={this.state.upVoteColor}
-                  />
-                  <Text style={{ paddingVertical: 5 }}> 20k</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={this._dwVote(detailData.articleId)}>
-                  <Icon
-                    name="md-thumbs-down"
-                    size={30}
-                    color={this.state.dwVoteColor}
-                  />
-                  <Text style={{ paddingVertical: 5 }}> 20k</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={this._ytvShare(detailData.articleId)}
-                >
-                  <Icon name="md-share-alt" size={30} />
-                  <Text style={{ paddingVertical: 5 }}> 20k</Text>
-                </TouchableOpacity>
-                <TouchableOpacity>
-                  <Icon name="md-chatboxes" size={30} />
-                  <Text style={{ paddingVertical: 5 }}> 20k</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-
-            <View style={styles.card}>
-              <Text style={styles.cardHeader}>Watch Video...</Text>
-
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  padding: 10
-                }}
-              >
-                <TouchableOpacity onPress={this.pVideo}>
-                  <View style={styles.bottomBarItem}>
-                    <Icon name="ios-videocam" size={30} />
-                    <Text style={{ paddingVertical: 5 }}> 480P</Text>
-                  </View>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={this.commentVideo}>
-                  <View style={styles.bottomBarItem}>
-                    <Icon name="ios-videocam" size={30} />
-                    <Text style={{ paddingVertical: 5 }}> 720P</Text>
-                  </View>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  onPress={this.openUrl("403845640359795")}
-                  // "fb://page/jeevan.examwarrior/posts/403845640359795"
-                  // "https://m.facebook.com/jeevan.examwarrior/posts/403845640359795"
-                >
-                  <View style={styles.bottomBarItem}>
-                    <Icon name="logo-facebook" size={30} />
-                    <Text style={{ paddingVertical: 5 }}> Facebook</Text>
-                  </View>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  onPress={this.openYUrl(
-                    "https://www.youtube.com/watch?v=AEr7NcU8cHw"
-                  )}
-                >
-                  <View style={styles.bottomBarItem}>
-                    <Icon name="logo-youtube" size={30} />
-                    <Text style={{ paddingVertical: 5 }}> YouTube</Text>
-                  </View>
-                </TouchableOpacity>
-              </View>
-            </View>
-
-            {!this.state.qresults1 ? (
+        <Loader loading={this.state.loadL} />
+        {this.state.renderI && (
+          <ScrollView>
+            <View>
               <View style={styles.card}>
-                <Text style={styles.cardHeader}>Add Your Voice Quiz</Text>
-                <Text style={styles.question}>
-                  {JSON.stringify(detailData.quiz1.question)}
+                <Text style={styles.cardHeader}>
+                  {JSON.stringify(detailData.articleHeading)}
                 </Text>
-                <View style={{ padding: 10 }}>
-                  <TouchableOpacity
-                    style={styles.qoption}
-                    onPress={this.setOptionsColor(1, 1)}
-                  >
-                    <Icon
-                      name={
-                        this.state.quiz1option1
-                          ? "ios-radio-button-on"
-                          : "ios-radio-button-off"
-                      }
-                      color={this.state.quiz1option1 ? "green" : "black"}
-                      size={20}
-                      style={{ paddingRight: 10 }}
-                    />
 
-                    <Text
-                      style={{
-                        fontSize: 20,
-                        color: this.state.quiz1option1 ? "green" : "black"
-                      }}
-                    >
-                      {JSON.stringify(detailData.quiz1.option1)}
-                    </Text>
-                  </TouchableOpacity>
-                  <Divider style={{ backgroundColor: "blue" }} />
-                  <TouchableOpacity
-                    style={styles.qoption}
-                    onPress={this.setOptionsColor(1, 2)}
-                  >
-                    <Icon
-                      name={
-                        this.state.quiz1option2
-                          ? "ios-radio-button-on"
-                          : "ios-radio-button-off"
-                      }
-                      color={this.state.quiz1option2 ? "green" : "black"}
-                      size={20}
-                      style={{ paddingRight: 10 }}
-                    />
-                    <Text
-                      style={{
-                        fontSize: 20,
-                        color: this.state.quiz1option2 ? "green" : "black"
-                      }}
-                    >
-                      {JSON.stringify(detailData.quiz1.option2)}
-                    </Text>
-                  </TouchableOpacity>
-                  <Divider style={{ backgroundColor: "blue" }} />
+                <Image
+                  source={{ uri: detailData.articleImage }}
+                  style={styles.cardImage}
+                />
+                <Text style={styles.cardText}>
+                  {JSON.stringify(detailData.articleShortDesc)}
+                </Text>
 
-                  <TouchableOpacity
-                    style={styles.qoption}
-                    onPress={this.setOptionsColor(1, 3)}
-                  >
-                    <Icon
-                      name={
-                        this.state.quiz1option3
-                          ? "ios-radio-button-on"
-                          : "ios-radio-button-off"
-                      }
-                      color={this.state.quiz1option3 ? "green" : "black"}
-                      size={20}
-                      style={{ paddingRight: 10 }}
-                    />
-                    <Text
-                      style={{
-                        fontSize: 20,
-                        color: this.state.quiz1option3 ? "green" : "black"
-                      }}
-                    >
-                      {JSON.stringify(detailData.quiz1.option3)}
-                    </Text>
-                  </TouchableOpacity>
-                  <Divider style={{ backgroundColor: "blue" }} />
-
-                  <TouchableOpacity
-                    style={styles.qoption}
-                    onPress={this.setOptionsColor(1, 4)}
-                  >
-                    <Icon
-                      name={
-                        this.state.quiz1option4
-                          ? "ios-radio-button-on"
-                          : "ios-radio-button-off"
-                      }
-                      color={this.state.quiz1option4 ? "green" : "black"}
-                      size={20}
-                      style={{ paddingRight: 10 }}
-                    />
-                    <Text
-                      style={{
-                        fontSize: 20,
-                        color: this.state.quiz1option4 ? "green" : "black"
-                      }}
-                    >
-                      {JSON.stringify(detailData.quiz1.option4)}
-                    </Text>
-                  </TouchableOpacity>
-                </View>
                 <View
                   style={{
                     flexDirection: "row",
-                    justifyContent: "space-around",
+                    justifyContent: "space-between",
                     padding: 10
                   }}
                 >
-                  <TouchableOpacity onPress={this.onQuizCancel}>
-                    <View style={styles.bottomBarItem}>
-                      <Icon name="ios-alert" size={30} />
-                      <Text style={{ paddingVertical: 5 }}> Cancel</Text>
-                    </View>
+                  <TouchableOpacity
+                    onPress={this._upVote(detailData.articleId)}
+                  >
+                    <Icon
+                      name="md-thumbs-up"
+                      size={30}
+                      color={this.state.upVoteColor}
+                    />
+                    <Text style={{ paddingVertical: 5 }}> 20k</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
-                    onPress={this.postQuiz(
-                      detailData.articleId,
-                      detailData.quizId,
-                      1
+                    onPress={this._dwVote(detailData.articleId)}
+                  >
+                    <Icon
+                      name="md-thumbs-down"
+                      size={30}
+                      color={this.state.dwVoteColor}
+                    />
+                    <Text style={{ paddingVertical: 5 }}> 20k</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={this._ytvShare(detailData.articleId)}
+                  >
+                    <Icon name="md-share-alt" size={30} />
+                    <Text style={{ paddingVertical: 5 }}> 20k</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity>
+                    <Icon name="md-chatboxes" size={30} />
+                    <Text style={{ paddingVertical: 5 }}> 20k</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+
+              <View style={styles.card}>
+                <Text style={styles.cardHeader}>Watch Video...</Text>
+
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    padding: 10
+                  }}
+                >
+                  <TouchableOpacity onPress={this.pVideo}>
+                    <View style={styles.bottomBarItem}>
+                      <Icon name="ios-videocam" size={30} />
+                      <Text style={{ paddingVertical: 5 }}> 480P</Text>
+                    </View>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={this.commentVideo}>
+                    <View style={styles.bottomBarItem}>
+                      <Icon name="ios-videocam" size={30} />
+                      <Text style={{ paddingVertical: 5 }}> 720P</Text>
+                    </View>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    onPress={this.openUrl("403845640359795")}
+                    // "fb://page/jeevan.examwarrior/posts/403845640359795"
+                    // "https://m.facebook.com/jeevan.examwarrior/posts/403845640359795"
+                  >
+                    <View style={styles.bottomBarItem}>
+                      <Icon name="logo-facebook" size={30} />
+                      <Text style={{ paddingVertical: 5 }}> Facebook</Text>
+                    </View>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    onPress={this.openYUrl(
+                      "https://www.youtube.com/watch?v=AEr7NcU8cHw"
                     )}
                   >
                     <View style={styles.bottomBarItem}>
-                      <Icon name="md-share-alt" size={30} />
-                      <Text style={{ paddingVertical: 5 }}> Vote</Text>
-                    </View>
-                  </TouchableOpacity>
-                  <TouchableOpacity>
-                    <View style={styles.bottomBarItem}>
-                      <Icon name="md-chatboxes" size={30} />
-                      <Text style={{ paddingVertical: 5 }}> Results</Text>
+                      <Icon name="logo-youtube" size={30} />
+                      <Text style={{ paddingVertical: 5 }}> YouTube</Text>
                     </View>
                   </TouchableOpacity>
                 </View>
               </View>
-            ) : (
-              <View style={styles.card}>
-                <Text style={styles.cardHeader}>Add Your Voice Quiz</Text>
-                <Text style={styles.question}>
-                  {JSON.stringify(detailData.quiz1.question)}
-                </Text>
-                <View style={{ padding: 10 }}>
-                  <TouchableOpacity
-                    style={styles.qoption}
-                    onPress={this.setOptionsColor(1, 1)}
-                  >
-                    <Text style={{ paddingRight: 10, fontSize: 20 }}>
-                      {" "}
-                      53% Voted -{" "}
-                    </Text>
 
-                    <Text
-                      style={{
-                        fontSize: 20,
-                        color: this.state.quiz1option1 ? "green" : "black"
-                      }}
+              {!this.state.qresults1 ? (
+                <View style={styles.card}>
+                  <Text style={styles.cardHeader}>Add Your Voice Quiz</Text>
+                  <Text style={styles.question}>
+                    {JSON.stringify(detailData.quiz1.question)}
+                  </Text>
+                  <View style={{ padding: 10 }}>
+                    <TouchableOpacity
+                      style={styles.qoption}
+                      onPress={this.setOptionsColor(1, 1)}
                     >
-                      {JSON.stringify(detailData.quiz1.option1)}
-                    </Text>
-                  </TouchableOpacity>
-                  <Divider style={{ backgroundColor: "blue" }} />
-                  <TouchableOpacity
-                    style={styles.qoption}
-                    onPress={this.setOptionsColor(1, 2)}
-                  >
-                    <Text style={{ paddingRight: 10, fontSize: 20 }}>
-                      {" "}
-                      53% Voted -{" "}
-                    </Text>
-                    <Text
-                      style={{
-                        fontSize: 20,
-                        color: this.state.quiz1option2 ? "green" : "black"
-                      }}
-                    >
-                      {JSON.stringify(detailData.quiz1.option2)}
-                    </Text>
-                  </TouchableOpacity>
-                  <Divider style={{ backgroundColor: "blue" }} />
+                      <Icon
+                        name={
+                          this.state.quiz1option1
+                            ? "ios-radio-button-on"
+                            : "ios-radio-button-off"
+                        }
+                        color={this.state.quiz1option1 ? "green" : "black"}
+                        size={20}
+                        style={{ paddingRight: 10 }}
+                      />
 
-                  <TouchableOpacity
-                    style={styles.qoption}
-                    onPress={this.setOptionsColor(1, 3)}
-                  >
-                    <Text style={{ paddingRight: 10, fontSize: 20 }}>
-                      {" "}
-                      53% Voted -{" "}
-                    </Text>
-                    <Text
-                      style={{
-                        fontSize: 20,
-                        color: this.state.quiz1option3 ? "green" : "black"
-                      }}
+                      <Text
+                        style={{
+                          fontSize: 20,
+                          color: this.state.quiz1option1 ? "green" : "black"
+                        }}
+                      >
+                        {JSON.stringify(detailData.quiz1.option1)}
+                      </Text>
+                    </TouchableOpacity>
+                    <Divider style={{ backgroundColor: "blue" }} />
+                    <TouchableOpacity
+                      style={styles.qoption}
+                      onPress={this.setOptionsColor(1, 2)}
                     >
-                      {JSON.stringify(detailData.quiz1.option3)}
-                    </Text>
-                  </TouchableOpacity>
-                  <Divider style={{ backgroundColor: "blue" }} />
+                      <Icon
+                        name={
+                          this.state.quiz1option2
+                            ? "ios-radio-button-on"
+                            : "ios-radio-button-off"
+                        }
+                        color={this.state.quiz1option2 ? "green" : "black"}
+                        size={20}
+                        style={{ paddingRight: 10 }}
+                      />
+                      <Text
+                        style={{
+                          fontSize: 20,
+                          color: this.state.quiz1option2 ? "green" : "black"
+                        }}
+                      >
+                        {JSON.stringify(detailData.quiz1.option2)}
+                      </Text>
+                    </TouchableOpacity>
+                    <Divider style={{ backgroundColor: "blue" }} />
 
-                  <TouchableOpacity
-                    style={styles.qoption}
-                    onPress={this.setOptionsColor(1, 4)}
-                  >
-                    <Text style={{ paddingRight: 10, fontSize: 20 }}>
-                      {" "}
-                      53% Voted -{" "}
-                    </Text>
-                    <Text
-                      style={{
-                        fontSize: 20,
-                        color: this.state.quiz1option4 ? "green" : "black"
-                      }}
+                    <TouchableOpacity
+                      style={styles.qoption}
+                      onPress={this.setOptionsColor(1, 3)}
                     >
-                      {JSON.stringify(detailData.quiz1.option4)}
-                    </Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={styles.qoption}
-                    onPress={this.setOptionsColor(1, 4)}
-                  >
-                    <Text style={{ paddingRight: 10, fontSize: 20 }}>
-                      {" "}
-                      Total Votes
-                    </Text>
-                    <Text
-                      style={{
-                        fontSize: 20,
-                        color: this.state.quiz1option4 ? "green" : "black"
-                      }}
+                      <Icon
+                        name={
+                          this.state.quiz1option3
+                            ? "ios-radio-button-on"
+                            : "ios-radio-button-off"
+                        }
+                        color={this.state.quiz1option3 ? "green" : "black"}
+                        size={20}
+                        style={{ paddingRight: 10 }}
+                      />
+                      <Text
+                        style={{
+                          fontSize: 20,
+                          color: this.state.quiz1option3 ? "green" : "black"
+                        }}
+                      >
+                        {JSON.stringify(detailData.quiz1.option3)}
+                      </Text>
+                    </TouchableOpacity>
+                    <Divider style={{ backgroundColor: "blue" }} />
+
+                    <TouchableOpacity
+                      style={styles.qoption}
+                      onPress={this.setOptionsColor(1, 4)}
                     >
-                      2.3k
-                    </Text>
-                  </TouchableOpacity>
+                      <Icon
+                        name={
+                          this.state.quiz1option4
+                            ? "ios-radio-button-on"
+                            : "ios-radio-button-off"
+                        }
+                        color={this.state.quiz1option4 ? "green" : "black"}
+                        size={20}
+                        style={{ paddingRight: 10 }}
+                      />
+                      <Text
+                        style={{
+                          fontSize: 20,
+                          color: this.state.quiz1option4 ? "green" : "black"
+                        }}
+                      >
+                        {JSON.stringify(detailData.quiz1.option4)}
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "space-around",
+                      padding: 10
+                    }}
+                  >
+                    <TouchableOpacity onPress={this.onQuizCancel}>
+                      <View style={styles.bottomBarItem}>
+                        <Icon name="ios-alert" size={30} />
+                        <Text style={{ paddingVertical: 5 }}> Cancel</Text>
+                      </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={this.postQuiz(
+                        detailData.articleId,
+                        detailData.quizId,
+                        1
+                      )}
+                    >
+                      <View style={styles.bottomBarItem}>
+                        <Icon name="md-share-alt" size={30} />
+                        <Text style={{ paddingVertical: 5 }}> Vote</Text>
+                      </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity>
+                      <View style={styles.bottomBarItem}>
+                        <Icon name="md-chatboxes" size={30} />
+                        <Text style={{ paddingVertical: 5 }}> Results</Text>
+                      </View>
+                    </TouchableOpacity>
+                  </View>
                 </View>
+              ) : (
+                <View style={styles.card}>
+                  <Text style={styles.cardHeader}>Add Your Voice Quiz</Text>
+                  <Text style={styles.question}>
+                    {JSON.stringify(detailData.quiz1.question)}
+                  </Text>
+                  <View style={{ padding: 10 }}>
+                    <TouchableOpacity
+                      style={styles.qoption}
+                      onPress={this.setOptionsColor(1, 1)}
+                    >
+                      <Text style={{ paddingRight: 10, fontSize: 20 }}>
+                        {" "}
+                        53% Voted -{" "}
+                      </Text>
+
+                      <Text
+                        style={{
+                          fontSize: 20,
+                          color: this.state.quiz1option1 ? "green" : "black"
+                        }}
+                      >
+                        {JSON.stringify(detailData.quiz1.option1)}
+                      </Text>
+                    </TouchableOpacity>
+                    <Divider style={{ backgroundColor: "blue" }} />
+                    <TouchableOpacity
+                      style={styles.qoption}
+                      onPress={this.setOptionsColor(1, 2)}
+                    >
+                      <Text style={{ paddingRight: 10, fontSize: 20 }}>
+                        {" "}
+                        53% Voted -{" "}
+                      </Text>
+                      <Text
+                        style={{
+                          fontSize: 20,
+                          color: this.state.quiz1option2 ? "green" : "black"
+                        }}
+                      >
+                        {JSON.stringify(detailData.quiz1.option2)}
+                      </Text>
+                    </TouchableOpacity>
+                    <Divider style={{ backgroundColor: "blue" }} />
+
+                    <TouchableOpacity
+                      style={styles.qoption}
+                      onPress={this.setOptionsColor(1, 3)}
+                    >
+                      <Text style={{ paddingRight: 10, fontSize: 20 }}>
+                        {" "}
+                        53% Voted -{" "}
+                      </Text>
+                      <Text
+                        style={{
+                          fontSize: 20,
+                          color: this.state.quiz1option3 ? "green" : "black"
+                        }}
+                      >
+                        {JSON.stringify(detailData.quiz1.option3)}
+                      </Text>
+                    </TouchableOpacity>
+                    <Divider style={{ backgroundColor: "blue" }} />
+
+                    <TouchableOpacity
+                      style={styles.qoption}
+                      onPress={this.setOptionsColor(1, 4)}
+                    >
+                      <Text style={{ paddingRight: 10, fontSize: 20 }}>
+                        {" "}
+                        53% Voted -{" "}
+                      </Text>
+                      <Text
+                        style={{
+                          fontSize: 20,
+                          color: this.state.quiz1option4 ? "green" : "black"
+                        }}
+                      >
+                        {JSON.stringify(detailData.quiz1.option4)}
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.qoption}
+                      onPress={this.setOptionsColor(1, 4)}
+                    >
+                      <Text style={{ paddingRight: 10, fontSize: 20 }}>
+                        {" "}
+                        Total Votes
+                      </Text>
+                      <Text
+                        style={{
+                          fontSize: 20,
+                          color: this.state.quiz1option4 ? "green" : "black"
+                        }}
+                      >
+                        2.3k
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "space-around",
+                      padding: 10
+                    }}
+                  >
+                    <TouchableOpacity onPress={this.onQuizCancel}>
+                      <View style={styles.bottomBarItem}>
+                        <Icon name="ios-alert" size={30} color="#D3D3D3" />
+                        <Text style={{ paddingVertical: 5, color: "#D3D3D3" }}>
+                          Cancel
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity>
+                      <View style={styles.bottomBarItem}>
+                        <Icon name="md-share-alt" size={30} color="#D3D3D3" />
+                        <Text style={{ paddingVertical: 5, color: "#D3D3D3" }}>
+                          Vote
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity>
+                      <View style={styles.bottomBarItem}>
+                        <Icon
+                          name="md-chatboxes"
+                          size={30}
+                          style={{ color: "#D3D3D3" }}
+                        />
+                        <Text style={{ paddingVertical: 5, color: "#D3D3D3" }}>
+                          {" "}
+                          Quiz
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              )}
+
+              <View style={styles.card}>
+                <Text style={styles.cardHeader}>
+                  Add Your Voice as Comment on any of below Social Media ...
+                </Text>
+
                 <View
                   style={{
                     flexDirection: "row",
-                    justifyContent: "space-around",
+                    justifyContent: "space-between",
                     padding: 10
                   }}
                 >
-                  <TouchableOpacity onPress={this.onQuizCancel}>
+                  <TouchableOpacity onPress={this.recordVideo}>
                     <View style={styles.bottomBarItem}>
-                      <Icon name="ios-alert" size={30} color="#D3D3D3" />
-                      <Text style={{ paddingVertical: 5, color: "#D3D3D3" }}>
-                        Cancel
-                      </Text>
+                      <Icon name="md-megaphone" size={30} />
+                      <Text style={{ paddingVertical: 5 }}> YTV VOICE</Text>
                     </View>
                   </TouchableOpacity>
-                  <TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={this.openYUrl(
+                      "https://twitter.com/jeevan72674854/status/1084291366371377152"
+                    )}
+                  >
                     <View style={styles.bottomBarItem}>
-                      <Icon name="md-share-alt" size={30} color="#D3D3D3" />
-                      <Text style={{ paddingVertical: 5, color: "#D3D3D3" }}>
-                        Vote
-                      </Text>
+                      <Icon name="logo-twitter" size={30} />
+                      <Text style={{ paddingVertical: 5 }}> TWITTER</Text>
                     </View>
                   </TouchableOpacity>
-                  <TouchableOpacity>
+
+                  <TouchableOpacity
+                    onPress={this.openUrl(
+                      "https://www.facebook.com/jeevan.examwarrior/posts/403845640359795"
+                    )}
+                  >
                     <View style={styles.bottomBarItem}>
-                      <Icon
-                        name="md-chatboxes"
-                        size={30}
-                        style={{ color: "#D3D3D3" }}
-                      />
-                      <Text style={{ paddingVertical: 5, color: "#D3D3D3" }}>
-                        {" "}
-                        Quiz
-                      </Text>
+                      <Icon name="logo-facebook" size={30} />
+                      <Text style={{ paddingVertical: 5 }}> FACEBOOK</Text>
+                    </View>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    onPress={this.openYUrl(
+                      "https://www.youtube.com/watch?v=AEr7NcU8cHw"
+                    )}
+                  >
+                    <View style={styles.bottomBarItem}>
+                      <Icon name="logo-youtube" size={30} />
+                      <Text style={{ paddingVertical: 5 }}> YOUTUBE</Text>
                     </View>
                   </TouchableOpacity>
                 </View>
               </View>
-            )}
-
-            <View style={styles.card}>
-              <Text style={styles.cardHeader}>
-                Add Your Voice as Comment on any of below Social Media ...
-              </Text>
-
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  padding: 10
-                }}
-              >
-                <TouchableOpacity onPress={this.recordVideo}>
-                  <View style={styles.bottomBarItem}>
-                    <Icon name="md-megaphone" size={30} />
-                    <Text style={{ paddingVertical: 5 }}> YTV VOICE</Text>
-                  </View>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={this.openYUrl(
-                    "https://twitter.com/jeevan72674854/status/1084291366371377152"
-                  )}
-                >
-                  <View style={styles.bottomBarItem}>
-                    <Icon name="logo-twitter" size={30} />
-                    <Text style={{ paddingVertical: 5 }}> TWITTER</Text>
-                  </View>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  onPress={this.openUrl(
-                    "https://www.facebook.com/jeevan.examwarrior/posts/403845640359795"
-                  )}
-                >
-                  <View style={styles.bottomBarItem}>
-                    <Icon name="logo-facebook" size={30} />
-                    <Text style={{ paddingVertical: 5 }}> FACEBOOK</Text>
-                  </View>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  onPress={this.openYUrl(
-                    "https://www.youtube.com/watch?v=AEr7NcU8cHw"
-                  )}
-                >
-                  <View style={styles.bottomBarItem}>
-                    <Icon name="logo-youtube" size={30} />
-                    <Text style={{ paddingVertical: 5 }}> YOUTUBE</Text>
-                  </View>
-                </TouchableOpacity>
-              </View>
             </View>
-          </View>
-        </ScrollView>
+          </ScrollView>
+        )}
       </SafeAreaView>
     );
   }

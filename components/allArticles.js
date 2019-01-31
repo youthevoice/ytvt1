@@ -104,6 +104,10 @@ export default class Articles extends React.Component {
   _onPress = articleId => {
     /* 1. Navigate to the Details route with params */
 
+    this.props.navigation.navigate("DetailArticle", {
+      articleId: articleId
+    });
+    /*
     this.setState({ loadL: true });
 
     axios
@@ -124,6 +128,7 @@ export default class Articles extends React.Component {
       .catch(error => {
         this.setState({ error, loadL: false });
       });
+      */
   };
 
   handleRefresh = () => {
@@ -217,13 +222,13 @@ export default class Articles extends React.Component {
       <View
         style={{
           flexDirection: "row",
-          justifyContent: "space-between",
+          justifyContent: "space-around",
           padding: 10
         }}
       >
         <TouchableOpacity
           onPress={() =>
-            this.props.navigation.navigate("ShareArticle", {
+            this.props.navigation.navigate("YtvShare", {
               datailData: this.state.data
             })
           }
