@@ -28,6 +28,8 @@ import com.reactnativedocumentpicker.ReactNativeDocumentPicker;
 import com.RNFetchBlob.RNFetchBlobPackage;
 import com.vinzscam.reactnativefileviewer.RNFileViewerPackage;
 import com.kevinresol.react_native_sound_recorder.RNSoundRecorderPackage;
+import io.invertase.firebase.messaging.RNFirebaseMessagingPackage;
+import io.invertase.firebase.notifications.RNFirebaseNotificationsPackage;
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
@@ -76,7 +78,9 @@ public class MainApplication extends Application implements ReactApplication,  S
               new ReactNativeDocumentPicker(),
               new RNFetchBlobPackage(),
               new RNFileViewerPackage(),
-              new RNSoundRecorderPackage()
+              new RNSoundRecorderPackage(),
+              new RNFirebaseMessagingPackage(),
+              new RNFirebaseNotificationsPackage()
               // new TwitterSigninPackage()
       );
     }
@@ -103,5 +107,8 @@ public class MainApplication extends Application implements ReactApplication,  S
     public String getFileProviderAuthority() {
         return "com.ytvt1.fileprovider";
     }
+
+
+
 
 }

@@ -7,7 +7,15 @@
  */
 
 import React, { Component } from "react";
-import { Platform, StyleSheet, Text, View } from "react-native";
+import {
+  Platform,
+  StyleSheet,
+  Text,
+  View,
+  AsyncStorage,
+  Alert
+} from "react-native";
+
 import SplashScreen from "react-native-splash-screen";
 import AllArticles from "./allArticles";
 import { createStackNavigator, createAppContainer } from "react-navigation";
@@ -27,6 +35,7 @@ import Audio from "./audio";
 import PickFile from "./pickFile";
 import PExample from "./progress";
 import RAudio from "./recordAudio";
+import Noti from "./noti";
 
 const Articles = createStackNavigator(
   {
@@ -34,7 +43,8 @@ const Articles = createStackNavigator(
       screen: AllArticles
     },
     DetailArticle: {
-      screen: DetailArticle
+      screen: DetailArticle,
+      path: "youthevoice.com/:articleId"
     },
     PlayVideo: {
       screen: PlayVideo
@@ -71,8 +81,11 @@ const Articles = createStackNavigator(
     initialRouteName: "AllArticles"
   }
 );
+const prefix = "https://";
 
 const AppContainer = createAppContainer(Articles);
+
+const MainApp = () => <AppContainer uriPrefix={prefix} />;
 
 export default class App extends Component {
   constructor() {
@@ -82,7 +95,7 @@ export default class App extends Component {
     };
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     // do stuff while splash screen is shown
     // After having done stuff (such as async tasks) hide the splash screen
     SplashScreen.hide();
@@ -96,9 +109,8 @@ export default class App extends Component {
         });
       });
   }
-
   render() {
-    return <AppContainer />;
+    return <MainApp />;
   }
 }
 
