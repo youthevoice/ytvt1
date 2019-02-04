@@ -4,6 +4,7 @@ import android.app.Application;
 
 import io.invertase.firebase.auth.RNFirebaseAuthPackage;
 import com.facebook.react.ReactApplication;
+import com.reactnative.ivpusic.imagepicker.PickerPackage;
 import com.johnsonsu.rnsoundplayer.RNSoundPlayerPackage;
 import org.reactnative.camera.RNCameraPackage;
 import com.facebook.reactnative.androidsdk.FBSDKPackage;
@@ -59,6 +60,7 @@ public class MainApplication extends Application implements ReactApplication,  S
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new PickerPackage(),
             new RNSoundPlayerPackage(),
             new RNCameraPackage(),
             new FBSDKPackage(mCallbackManager),

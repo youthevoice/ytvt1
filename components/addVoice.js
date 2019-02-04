@@ -74,6 +74,23 @@ export default class Tshare1 extends Component {
       .catch(err => console.error("An error occurred", err));
   };
 
+  voiceImage = () => {
+    this.props.navigation.navigate("VoiceImage", {
+      datailData: ""
+    });
+  };
+  voiceAudio = () => {
+    this.props.navigation.navigate("VoiceAudio", {
+      datailData: ""
+    });
+  };
+
+  voiceVideo = () => {
+    this.props.navigation.navigate("VoiceVideo", {
+      datailData: ""
+    });
+  };
+
   render() {
     // const { navigation } = this.props;
     //const detailData = navigation.getParam("datailData", {});
@@ -100,12 +117,36 @@ export default class Tshare1 extends Component {
 
           <View
             style={{
+              flexDirection: "row",
+              justifyContent: "center",
+              padding: 10
+            }}
+          >
+            <TouchableOpacity style={{ alignItems: "center" }}>
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <Icon name="md-chatboxes" size={40} color="#bf360c" />
+                <Text style={{ padding: 10, color: "#bf360c", fontSize: 20 }}>
+                  View All Voices
+                </Text>
+              </View>
+
+              <Text
+                style={{ paddingVertical: 5, fontSize: 20, color: "#1b5e20" }}
+              >
+                20k Voices Heard Till Date
+              </Text>
+            </TouchableOpacity>
+          </View>
+
+          <View
+            style={{
               paddingHorizontal: 10,
               paddingVertical: 40
             }}
           >
-            <Text style={{ fontSize: 20 }}>
-              Please share this Article on various Social Media Applications...
+            <Text style={{ fontSize: 18 }}>
+              Please Add Your Voice on YTV throught Images or Audio or Video or
+              on any of the below social media Applications...
             </Text>
           </View>
 
@@ -119,11 +160,33 @@ export default class Tshare1 extends Component {
           >
             <TouchableOpacity
               style={styles.bottomBarItem}
-              onPress={() => this.onShare()}
+              onPress={() => this.voiceImage()}
             >
-              <Fa5 name={"whatsapp"} size={40} color="#25D366" />
-              <Text style={{ paddingVertical: 5 }}> WHATSAPP</Text>
+              <Fa5 name={"images"} size={40} color="#25D366" />
+              <Text style={{ paddingVertical: 5 }}> Voice-Images</Text>
             </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.bottomBarItem}
+              onPress={() => this.voiceAudio()}
+            >
+              <Fa5 name={"headphones"} size={40} color="#3b5998" />
+              <Text style={{ paddingVertical: 5 }}> Voice Audio</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.bottomBarItem}
+              onPress={() => this.voiceVideo()}
+            >
+              <Fa5 name={"video"} size={40} color="#38A1F3" />
+              <Text style={{ paddingVertical: 5 }}> Voice Video</Text>
+            </TouchableOpacity>
+          </View>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              padding: 20
+            }}
+          >
             <TouchableOpacity
               style={styles.bottomBarItem}
               onPress={this.openFUrl("403845640359795")}
@@ -140,21 +203,6 @@ export default class Tshare1 extends Component {
               <Fa5 name={"twitter"} size={40} color="#38A1F3" />
               <Text style={{ paddingVertical: 5 }}> TWITTER</Text>
             </TouchableOpacity>
-          </View>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              padding: 20
-            }}
-          >
-            <TouchableOpacity
-              style={styles.bottomBarItem}
-              onPress={() => this.onShare1()}
-            >
-              <Fa5 name={"envelope"} size={40} color="#880e4f" />
-              <Text style={{ paddingVertical: 5 }}> EMAIL</Text>
-            </TouchableOpacity>
             <TouchableOpacity
               style={styles.bottomBarItem}
               onPress={this.openUrl(
@@ -163,10 +211,6 @@ export default class Tshare1 extends Component {
             >
               <Fa5 name={"reddit"} size={40} color="#FF4500" />
               <Text style={{ paddingVertical: 5 }}> REDDIT</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.bottomBarItem}>
-              <Fa5 name={"instagram"} size={40} color="#3f729b" />
-              <Text style={{ paddingVertical: 5 }}> INSTAGRAM</Text>
             </TouchableOpacity>
           </View>
           <View
@@ -183,14 +227,9 @@ export default class Tshare1 extends Component {
               <Fa5 name={"youtube"} size={40} color="#c4302b" />
               <Text style={{ paddingVertical: 5 }}> YOUTUBE</Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.bottomBarItem}
-              onPress={this.openUrl(
-                "https://www.reddit.com/r/assholedesign/comments/a02ezp/meta_is_it_asshole_design_a_handy_flowchart/"
-              )}
-            >
-              <Fa5 name={"pinterest"} size={40} color="#DD4B39" />
-              <Text style={{ paddingVertical: 5 }}> PINTREST</Text>
+            <TouchableOpacity style={styles.bottomBarItem}>
+              <Fa5 name={"instagram"} size={40} color="#3f729b" />
+              <Text style={{ paddingVertical: 5 }}> INSTAGRAM</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.bottomBarItem}>
               <Fa5 name={"quora"} size={40} color="#a62100" />

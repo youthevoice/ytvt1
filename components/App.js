@@ -36,6 +36,12 @@ import PickFile from "./pickFile";
 import PExample from "./progress";
 import RAudio from "./recordAudio";
 import Noti from "./noti";
+import ImagePick from "./imagePick";
+import YtvVoice from "./addVoice";
+import VoiceImage from "./voiceImage";
+import VoiceAudio from "./voiceAudio";
+import VoiceVideo from "./voiceVideo";
+import ABEx from "./animateBEx";
 
 const Articles = createStackNavigator(
   {
@@ -72,6 +78,18 @@ const Articles = createStackNavigator(
     },
     PickFile: {
       screen: PickFile
+    },
+    YtvVoice: {
+      screen: YtvVoice
+    },
+    VoiceImage: {
+      screen: VoiceImage
+    },
+    VoiceAudio: {
+      screen: VoiceAudio
+    },
+    VoiceVideo: {
+      screen: VoiceVideo
     }
   },
   {

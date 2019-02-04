@@ -421,7 +421,13 @@ export default class Articles extends React.Component {
           <Text style={{ paddingVertical: 5 }}> 20k Shares</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity>
+        <TouchableOpacity
+          onPress={() =>
+            this.props.navigation.navigate("YtvVoice", {
+              datailData: this.state.data
+            })
+          }
+        >
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <Icon name="md-chatboxes" size={30} color="#388e3c" />
             <Text style={{ padding: 10, color: "#388e3c" }}>
