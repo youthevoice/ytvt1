@@ -19,6 +19,7 @@ import firebase from "react-native-firebase";
 import Icon from "react-native-vector-icons/Ionicons";
 //import FaIcon from "react-native-vector-icons/FontAwesome5";
 import Modal from "react-native-modal";
+import Fa5 from "react-native-vector-icons/FontAwesome5";
 
 import { RectButton, BorderlessButton } from "react-native-gesture-handler";
 import axios from "axios";
@@ -447,14 +448,18 @@ export default class Articles extends React.Component {
         <View style={styles.body}>
           <View style={styles.headerBar}>
             <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <Icon name="ios-megaphone" color="#d84315" size={30} />
+              <Icon name="ios-megaphone" color="#fff" size={30} />
               <Text style={styles.logo}>YouTheVoice</Text>
             </View>
             <View>
               <BorderlessButton
-                onPress={() => this.props.navigation.toggleDrawer()}
+                onPress={() => this.props.navigation.navigate("ChooseLang")}
               >
-                <Icon name="ios-search" color="#ffffff" size={30} />
+                <Fa5
+                  name="american-sign-language-interpreting"
+                  color="#ffffff"
+                  size={25}
+                />
               </BorderlessButton>
             </View>
           </View>

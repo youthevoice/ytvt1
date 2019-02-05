@@ -41,7 +41,7 @@ import YtvVoice from "./addVoice";
 import VoiceImage from "./voiceImage";
 import VoiceAudio from "./voiceAudio";
 import VoiceVideo from "./voiceVideo";
-import ABEx from "./animateBEx";
+import ChooseLang from "./chooseLang";
 
 const Articles = createStackNavigator(
   {
@@ -90,6 +90,9 @@ const Articles = createStackNavigator(
     },
     VoiceVideo: {
       screen: VoiceVideo
+    },
+    ChooseLang: {
+      screen: ChooseLang
     }
   },
   {
