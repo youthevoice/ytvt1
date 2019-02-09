@@ -21,7 +21,9 @@ import Fa5 from "react-native-vector-icons/FontAwesome5";
 import Icon from "react-native-vector-icons/Ionicons";
 import { RectButton, BorderlessButton } from "react-native-gesture-handler";
 
-export default class Tshare1 extends Component {
+import { connect } from "react-redux";
+
+class YtvVoice extends Component {
   onShare() {
     let shareOptions = {
       url: "https://www.youtube.com/watch?v=GeyDf4ooPdo",
@@ -80,9 +82,15 @@ export default class Tshare1 extends Component {
     });
   };
   voiceAudio = () => {
-    this.props.navigation.navigate("VoiceAudio", {
-      datailData: ""
-    });
+    if (!this.props.isAuthenticated) {
+      this.props.navigation.navigate("YtvLogin", {
+        screenName: "VoiceAudio"
+      });
+    } else {
+      this.props.navigation.navigate("VoiceAudio", {
+        articleId: ""
+      });
+    }
   };
 
   voiceVideo = () => {
@@ -241,6 +249,17 @@ export default class Tshare1 extends Component {
     );
   }
 }
+
+const mapStateToProps = state => {
+  return {
+    isAuthenticated: state.isAuthenticated
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  null
+)(YtvVoice);
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#e3f2fd" },

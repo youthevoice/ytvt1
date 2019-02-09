@@ -144,9 +144,13 @@ android {
 }
 
 dependencies {
+
+    implementation project(':react-native-snackbar')
     implementation project(':react-native-image-crop-picker')
     implementation project(':react-native-sound-player')
     implementation project(':react-native-camera')
+
+    implementation project(':react-native-linear-gradient')
 
     implementation 'com.facebook.android:facebook-android-sdk:4.34.0'
     implementation project(':react-native-fbsdk')

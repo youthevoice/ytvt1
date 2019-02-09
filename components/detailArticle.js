@@ -25,7 +25,9 @@ import axios from "axios";
 import { RectButton, BorderlessButton } from "react-native-gesture-handler";
 import Loader from "./loader";
 
-export default class DetailArticle extends Component {
+import { connect } from "react-redux";
+
+class DetailArticle extends Component {
   constructor(props) {
     super(props);
 
@@ -43,7 +45,7 @@ export default class DetailArticle extends Component {
       quiz3: {},
       quiz4: {},
       isLoggedIn: false,
-      isAuthenticated: false,
+      // isAuthenticated: false,
       upVote: false,
       dVote: false,
       upVoteColor: "#9e9e9e",
@@ -56,18 +58,6 @@ export default class DetailArticle extends Component {
 
   async componentDidMount() {
     this._getArticle();
-    try {
-      const isLoggedIn = await AsyncStorage.getItem("isLoggedIn");
-      console.log("isLoggedIn", isLoggedIn);
-
-      if (isLoggedIn) {
-        this.setState({
-          isAuthenticated: true
-        });
-      }
-    } catch (error) {
-      console.log("Error while storing the token");
-    }
   }
 
   _getArticle = () => {
@@ -258,7 +248,7 @@ export default class DetailArticle extends Component {
   }
 
   _upVote = articleId => () => {
-    if (!this.state.isAuthenticated) {
+    if (!this.props.isAuthenticated) {
       this.props.navigation.navigate("YtvLogin", {
         articleID: articleId
       });
@@ -276,7 +266,7 @@ export default class DetailArticle extends Component {
   };
 
   _dwVote = articleId => () => {
-    if (!this.state.isAuthenticated) {
+    if (!this.props.isAuthenticated) {
       this.props.navigation.navigate("YtvLogin", {
         articleID: articleId
       });
@@ -765,6 +755,14 @@ export default class DetailArticle extends Component {
     );
   }
 }
+
+const mapStateToProps = state => {
+  return {
+    isAuthenticated: state.isAuthenticated
+  };
+};
+
+export default connect(mapStateToProps)(DetailArticle);
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#e3f2fd" },

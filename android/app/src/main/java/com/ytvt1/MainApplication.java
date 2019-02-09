@@ -4,6 +4,8 @@ import android.app.Application;
 
 import io.invertase.firebase.auth.RNFirebaseAuthPackage;
 import com.facebook.react.ReactApplication;
+import com.azendoo.reactnativesnackbar.SnackbarPackage;
+
 import com.reactnative.ivpusic.imagepicker.PickerPackage;
 import com.johnsonsu.rnsoundplayer.RNSoundPlayerPackage;
 import org.reactnative.camera.RNCameraPackage;
@@ -41,6 +43,7 @@ import com.facebook.appevents.AppEventsLogger;
 
 import java.util.Arrays;
 import java.util.List;
+import com.BV.LinearGradient.LinearGradientPackage;
 
 public class MainApplication extends Application implements ReactApplication,  ShareApplication  {
 
@@ -60,6 +63,8 @@ public class MainApplication extends Application implements ReactApplication,  S
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+
+            new SnackbarPackage(),
             new PickerPackage(),
             new RNSoundPlayerPackage(),
             new RNCameraPackage(),
@@ -82,8 +87,9 @@ public class MainApplication extends Application implements ReactApplication,  S
               new RNFileViewerPackage(),
               new RNSoundRecorderPackage(),
               new RNFirebaseMessagingPackage(),
-              new RNFirebaseNotificationsPackage()
-              // new TwitterSigninPackage()
+              new RNFirebaseNotificationsPackage(),
+      new LinearGradientPackage()
+      // new TwitterSigninPackage()
       );
     }
 

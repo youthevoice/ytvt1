@@ -22,7 +22,7 @@ import { createStackNavigator, createAppContainer } from "react-navigation";
 import DetailArticle from "./detailArticle";
 import PlayVideo from "./playVideo";
 import GLogin from "./gfLogin";
-import FbLogin from "./fbfLogin";
+import FLogin from "./fbfLogin";
 import YtvShare from "./aShare";
 import PLogin from "./phLogin";
 import YtvLogin from "./ytvLogin";
@@ -43,6 +43,17 @@ import VoiceAudio from "./voiceAudio";
 import VoiceVideo from "./voiceVideo";
 import ChooseLang from "./chooseLang";
 
+import { createStore, applyMiddleware } from "redux";
+import thunk from "redux-thunk";
+import { Provider } from "react-redux";
+import reducer from "./store/reducer";
+
+import AsyncText from "./asyncSTest";
+
+const store = createStore(reducer, applyMiddleware(thunk));
+
+console.log("store....", store);
+
 const Articles = createStackNavigator(
   {
     AllArticles: {
@@ -61,8 +72,8 @@ const Articles = createStackNavigator(
     GLogin: {
       screen: GLogin
     },
-    FbLogin: {
-      screen: FbLogin
+    FLogin: {
+      screen: FLogin
     },
     YtvLogin: {
       screen: YtvLogin
@@ -119,6 +130,15 @@ export default class App extends Component {
   async componentDidMount() {
     // do stuff while splash screen is shown
     // After having done stuff (such as async tasks) hide the splash screen
+    try {
+      isAuthenticated = await AsyncStorage.getItem("isAuthenticated");
+      authMethod = await AsyncStorage.getItem("authMethod");
+      userId = await AsyncStorage.getItem("userId");
+      sname = await AsyncStorage.getItem("sName");
+      console.log(isAuthenticated, authMethod, userId, sname);
+    } catch (error) {
+      console.log(error);
+    }
     SplashScreen.hide();
     Orientation.lockToPortrait();
     firebase
@@ -131,7 +151,11 @@ export default class App extends Component {
       });
   }
   render() {
-    return <MainApp />;
+    return (
+      <Provider store={store}>
+        <MainApp />
+      </Provider>
+    );
   }
 }
 

@@ -12,11 +12,13 @@ import {
   Image,
   ScrollView,
   Linking,
-  AlertIOS
+  AlertIOS,
+  AsyncStorage
 } from "react-native";
 //import Share from "react-native-share";
 import Share, { ShareSheet, Button } from "react-native-share";
 import Fa5 from "react-native-vector-icons/FontAwesome5";
+import SpinnerButton from "react-native-spinner-button";
 //import images from "./imageBase64";
 import Icon from "react-native-vector-icons/Ionicons";
 import { RectButton, BorderlessButton } from "react-native-gesture-handler";
@@ -25,38 +27,31 @@ import FbLogin from "./fbLogin";
 import Tshare1 from "./aShare";
 import Ph from "./phLogin";
 import { Divider } from "react-native-elements";
+import { connect } from "react-redux";
+import { logout } from "./store/actions";
 
-export default class chooseLang extends Component {
+class UserDetails extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       loading: true,
-      qresults1: false,
-      selopt: null,
-      shareModal: false,
-      quiz1option1: false,
-      quiz1option2: false,
-      quiz1option3: false,
-      quiz1option4: false
+      dotLoading: false
     };
   }
-  _onPressPLogin = articleId => () => {
-    this.props.navigation.navigate("PLogin", {
-      articleID: articleId
-    });
-  };
 
-  _onPressGLogin = articleId => () => {
-    this.props.navigation.navigate("GLogin", {
-      articleID: articleId
-    });
-  };
+  async componentDidMount() {
+    this.setState({});
+    console.log(this.state);
+  }
 
-  _onPressFLogin = articleId => () => {
-    this.props.navigation.navigate("FLogin", {
-      articleID: articleId
-    });
+  logout = async () => {
+    this.setState({ dotLoading: true });
+    await AsyncStorage.removeItem("isLoggedIn");
+    await AsyncStorage.removeItem("authMethod");
+    await AsyncStorage.removeItem("userId");
+    await AsyncStorage.removeItem("sName");
+    this.setState({ dotLoading: false });
   };
 
   render() {
@@ -133,10 +128,144 @@ export default class chooseLang extends Component {
             </TouchableOpacity>
           </View>
         </View>
+
+        <View style={styles.card}>
+          <Text style={styles.cardHeader}>User Details</Text>
+
+          <View style={{ padding: 10 }}>
+            <View style={styles.userDetails}>
+              <Text
+                style={{
+                  fontSize: 18,
+                  color: "black"
+                }}
+              >
+                LoggedIn:
+              </Text>
+              <Text
+                style={{
+                  fontSize: 18,
+                  color: "black"
+                }}
+              >
+                {this.props.isLoggedIn}
+              </Text>
+            </View>
+            <Divider style={{ backgroundColor: "blue" }} />
+            <TouchableOpacity
+              style={styles.qoption}
+              // onPress={this.setOptionsColor(1, 1)}
+            >
+              <Text> Login Method </Text>
+
+              <Text
+                style={{
+                  fontSize: 20,
+                  color: this.state.quiz1option1 ? "green" : "black"
+                }}
+              >
+                Google
+              </Text>
+            </TouchableOpacity>
+            <View>
+              <Text
+                style={{
+                  fontSize: 20,
+                  color: "black"
+                }}
+              >
+                UsetId
+              </Text>
+
+              <Text
+                style={{
+                  fontSize: 20,
+                  color: "black"
+                }}
+              >
+                ew1dotcom@gmal.com
+              </Text>
+            </View>
+            <TouchableOpacity
+              style={styles.qoption}
+              // onPress={this.setOptionsColor(1, 1)}
+            >
+              <Text
+                style={{
+                  fontSize: 20,
+                  color: "black"
+                }}
+              >
+                LoggedIN Time
+              </Text>
+
+              <Text
+                style={{
+                  fontSize: 20,
+                  color: "black"
+                }}
+              >
+                12-FEB-2019 12:23
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.qoption}
+              // onPress={this.setOptionsColor(1, 1)}
+            >
+              <SpinnerButton
+                buttonStyle={[
+                  styles.buttonStyle,
+                  {
+                    backgroundColor: "#0d47a1",
+                    borderRadius: 50,
+                    width: 200
+                  }
+                ]}
+                isLoading={this.state.dotLoading}
+                spinnerType="DotIndicator"
+                onPress={this.props.userLogout}
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignItems: "center"
+                  }}
+                >
+                  <Fa5 name={"sign-out-alt"} size={30} color="#fff" />
+                  <Text style={{ color: "white", paddingHorizontal: 10 }}>
+                    Logout
+                  </Text>
+                </View>
+              </SpinnerButton>
+            </TouchableOpacity>
+          </View>
+        </View>
       </SafeAreaView>
     );
   }
 }
+
+const mapStateToProps = state => {
+  return {
+    isLoggedIn: state.isLoggedIn,
+    authMethod: state.authMethod,
+    userId: state.userId,
+    sName: state.sName,
+    isAuthenticated: state.isAuthenticated
+  };
+};
+
+const mapDispathToProps = dispatch => {
+  return {
+    userLogout: () => dispatch(logout())
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispathToProps
+)(UserDetails);
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#e3f2fd" },
@@ -146,6 +275,11 @@ const styles = StyleSheet.create({
     fontWeight: "bold"
   },
   qoption: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 15
+  },
+  userDetails: {
     flexDirection: "row",
     alignItems: "center",
     padding: 15

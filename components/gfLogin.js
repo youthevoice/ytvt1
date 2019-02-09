@@ -20,6 +20,7 @@ import {
   AsyncStorage
 } from "react-native";
 import axios from "axios";
+import Fa5 from "react-native-vector-icons/FontAwesome5";
 
 import { SocialIcon } from "react-native-elements";
 import Icon from "react-native-vector-icons/Ionicons";
@@ -29,6 +30,7 @@ import { RectButton, BorderlessButton } from "react-native-gesture-handler";
 import { GoogleSignin, statusCodes } from "react-native-google-signin";
 import firebase from "react-native-firebase";
 import Loader from "./loader";
+import SpinnerButton from "react-native-spinner-button";
 
 export default class GS extends Component {
   constructor(props) {
@@ -36,8 +38,13 @@ export default class GS extends Component {
     this.state = {
       userInfo: null,
       error: null,
-      loadL: false
+      loadL: false,
+      dotLoading: false
     };
+  }
+
+  async componentDidMount() {
+    this.googleLogin();
   }
 
   _onPress = articleId => () => {
@@ -54,7 +61,8 @@ export default class GS extends Component {
       .then(res => {
         console.log(res.data);
         this.setState({
-          loadL: false
+          loadL: false,
+          dotLoading: false
         });
         this.props.navigation.navigate("DetailArticle", {
           datailData: res.data
@@ -66,7 +74,7 @@ export default class GS extends Component {
   };
 
   googleLogin = async () => {
-    this.setState({ loadL: true });
+    this.setState({ loadL: true, dotLoading: true });
     try {
       // add any configuration settings here:
       await GoogleSignin.configure();
@@ -74,7 +82,7 @@ export default class GS extends Component {
       try {
         data = await GoogleSignin.signIn();
       } catch (error) {
-        this.setState({ loadL: false });
+        this.setState({ loadL: false, dotLoading: false });
         if (error.code === statusCodes.SIGN_IN_CANCELLED) {
           // sign in was cancelled
           Alert.alert("cancelled");
@@ -103,18 +111,22 @@ export default class GS extends Component {
 
       console.log(JSON.stringify(firebaseUserCredential.user.toJSON()));
       try {
-        await AsyncStorage.setItem("isLoggedIn", true);
+        await AsyncStorage.setItem("isLoggedIn", "yes");
         await AsyncStorage.setItem(
-          "displayName",
+          "sName",
           firebaseUserCredential.user.toJSON().displayName
         );
         await AsyncStorage.setItem("authMethod", "google");
+        await AsyncStorage.setItem(
+          "userId",
+          firebaseUserCredential.user.toJSON().email
+        );
       } catch (error) {
-        console.log("Error while storing the token");
+        console.log(error);
       }
       this._onPress("a2b3a780-eaed-4cbf-b373-38a46ce20455")();
     } catch (e) {
-      this.setState({ loadL: false });
+      this.setState({ loadL: false, dotLoading: false });
       console.error(e);
     }
   };
@@ -144,23 +156,33 @@ export default class GS extends Component {
           style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
         >
           <View>
-            <Loader loading={this.state.loadL} />
-            <Button1
-              containerStyle={{
-                padding: 10,
-                height: 45,
-                width: 200,
-
-                overflow: "hidden",
-                borderRadius: 4,
-                backgroundColor: "#eceff1"
-              }}
-              style={{ fontSize: 20, color: "green" }}
-              styleDisabled={{ color: "red" }}
-              onPress={this.googleLogin}
+            {/* <Loader loading={this.state.loadL} /> */}
+            <SpinnerButton
+              buttonStyle={[
+                styles.buttonStyle,
+                {
+                  backgroundColor: "#0d47a1",
+                  borderRadius: 50,
+                  width: 200
+                }
+              ]}
+              isLoading={this.state.dotLoading}
+              spinnerType="DotIndicator"
+              // onPress={this.signIn}
             >
-              Login
-            </Button1>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  alignItems: "center"
+                }}
+              >
+                <Fa5 name={"sign-in-alt"} size={30} color="#fff" />
+                <Text style={{ color: "white", paddingHorizontal: 10 }}>
+                  Phone SignIn
+                </Text>
+              </View>
+            </SpinnerButton>
           </View>
         </View>
       </SafeAreaView>
@@ -251,5 +273,10 @@ const styles = StyleSheet.create({
   bottomBarItem: {
     alignItems: "center",
     justifyContent: "center"
+  },
+  buttonStyle: {
+    borderRadius: 10,
+    margin: 20,
+    width: 200
   }
 });

@@ -32,13 +32,11 @@ import firebase from "react-native-firebase";
 import Loader from "./loader";
 import SpinnerButton from "react-native-spinner-button";
 import Snackbar from "react-native-snackbar";
-import { connect } from "react-redux";
-import { loginDetails } from "./store/actions";
 
 const successImageUri =
   "https://cdn.pixabay.com/photo/2015/06/09/16/12/icon-803718_1280.png";
 
-class PhoneLogin extends Component {
+export default class PhoneAuthTest extends Component {
   constructor(props) {
     super(props);
     this.unsubscribe = null;
@@ -46,7 +44,7 @@ class PhoneLogin extends Component {
       user: null,
       message: "",
       codeInput: "",
-      phoneNumber: "",
+      phoneNumber: "+91",
       sname: "",
       confirmResult: null,
       loadL: false,
@@ -58,27 +56,21 @@ class PhoneLogin extends Component {
       dotLoading: false,
       skypeLoading: false,
       verifyCode: "",
-      codeSent: false,
-      otpLoading: false,
-      msgColor: "black"
+      codeSent: false
     };
   }
 
   componentDidMount() {
     this.setState({
-      //screenName: this.props.navigation.getParam("screenName", ""),
-      //articleId: this.props.navigation.getParam("articleId", "")
+      screenName: this.props.navigation.getParam("screenName", ""),
+      articleId: this.props.navigation.getParam("articleId", "")
     });
   }
 
   componentWillUnmount() {}
 
   verifyCode = () => {
-    this.setState({
-      skypeLoading: true,
-      message: "Verifying entered Code...",
-      msgColor: "black"
-    });
+    this.setState({ skypeLoading: true, message: "Verifying entered Code..." });
     console.log(this.state.verificationId, this.state.verifyCode);
     try {
       const cred = firebase.auth.PhoneAuthProvider.credential(
@@ -93,35 +85,14 @@ class PhoneLogin extends Component {
         .signInWithCredential(cred)
         .then(user => {
           console.log("userrrrrr", user);
-          Snackbar.show({
-            title: "LOGIN SUCCESS",
-            duration: Snackbar.LENGTH_LONG,
-            backgroundColor: "#1b5e20",
-            color: "#fff"
-          });
           this.setState({
             skypeLoading: false,
-            message: "Verification Successs ...",
-            userVerified: true,
-            msgColor: "#1b5e20"
-          });
-          var acData = {
-            isAuthenticated: true,
-            authMethod: "phone",
-            userId: this.state.phoneNumber,
-            sName: this.state.sname
-          };
-          this.props.userLoginDetails(acData);
-          this.props.navigation.navigate("DetailArticle", {
-            articleId: this.state.articleId
+            message: "Verification Successs 12333...",
+            userVerified: true
           });
         })
         .catch(error => {
           console.log(error);
-          this.setState({
-            message: "Code Verification error, Please input Correct Code!",
-            msgColor: "#b71c1c"
-          });
         });
 
       // console.log(firebaseUserCredential);
@@ -129,15 +100,22 @@ class PhoneLogin extends Component {
       console.log(err);
       this.setState({
         skypeLoading: false,
-        message: "Error !!! Verifying  Code...",
-        msgColor: "#b71c1c"
+        message: "Error !!! Verifying  Code..."
       });
     }
   };
 
   processUser = async () => {
     if (this.state.userVerified) {
-      this.props.userLoginDetails();
+      try {
+        await AsyncStorage.setItem("ytvUserDetails", "sdkasJDKLajs");
+        // await AsyncStorage.setItem('isLoggedIn', true);
+      } catch (error) {
+        // Error saving data
+      }
+      this.props.navigation.navigate("DetailArticle", {
+        articleId: this.state.articleId
+      });
     }
   };
 
@@ -179,10 +157,8 @@ class PhoneLogin extends Component {
               console.log("phoneAuthSnapshot", phoneAuthSnapshot);
               this.setState({
                 verificationId: phoneAuthSnapshot.verificationId,
-                message: "Code is Sent , trying Auto Verify else Input Code...",
-                codeSent: true,
-                otpLoading: true,
-                msgColor: "black"
+                message: "Code is Sent , trying Auto Verify...",
+                codeSent: true
               });
               // on ios this is the final phone auth state event you'd receive
               // so you'd then ask for user input of the code and build a credential from it
@@ -190,11 +166,7 @@ class PhoneLogin extends Component {
               break;
             case firebase.auth.PhoneAuthState.ERROR: // or 'error'
               console.log("verification error");
-              console.log("verificationnn errorrr", phoneAuthSnapshot.error);
-              this.setState({
-                message: "Code Verification error, Please input Correct Code!",
-                msgColor: "#b71c1c"
-              });
+              console.log(phoneAuthSnapshot.error);
               break;
 
             // ---------------------
@@ -207,9 +179,7 @@ class PhoneLogin extends Component {
               this.setState({
                 codeValidation: true,
                 dotLoading: false,
-                otpLoading: false,
-                message: "Could not auto verify , please input verify code...",
-                msgColor: "black"
+                message: "Could not auto verify , please input verify code..."
               });
 
               break;
@@ -220,20 +190,7 @@ class PhoneLogin extends Component {
               console.log(phoneAuthSnapshot);
 
               this.setState({
-                skypeLoading: false,
-                message: "Verification Successs ...",
-                userVerified: true,
-                msgColor: "#1b5e20"
-              });
-              var acData = {
-                isAuthenticated: true,
-                authMethod: "phone",
-                userId: this.state.phoneNumber,
-                sName: this.state.sname
-              };
-              this.props.userLoginDetails(acData);
-              this.props.navigation.navigate("DetailArticle", {
-                articleId: this.state.articleId
+                userVerified: true
               });
 
               // Example usage if handling here and not in optionalCompleteCb:
@@ -251,7 +208,7 @@ class PhoneLogin extends Component {
           // optionalErrorCb would be same logic as the ERROR case above,  if you've already handed
           // the ERROR case in the above observer then there's no need to handle it here
           console.log("errorrrr", error);
-          this.setState({ message: "UnExpected Error ", msgColor: "#b71c1c" });
+          this.setState({ message: "UnExpected Error " });
           // verificationId is attached to error if required
           console.log("errorrr iddd", error.verificationId);
         },
@@ -273,9 +230,78 @@ class PhoneLogin extends Component {
     // optionalCompleteCb (with the same resulting args)
   };
 
+  confirmCode = () => {
+    const { codeInput, confirmResult } = this.state;
+
+    if (confirmResult && codeInput.length) {
+      confirmResult
+        .confirm(codeInput)
+        .then(user => {
+          this.setState({ message: "Code Confirmed!" });
+          console.log("Hellloooo  I am in conform result");
+        })
+        .catch(error =>
+          this.setState({ message: `Code Confirm Error: ${error.message}` })
+        );
+    }
+  };
+
   signOut = () => {
     firebase.auth().signOut();
   };
+
+  renderPhoneNumberInput() {
+    const { phoneNumber, sname } = this.state;
+
+    return (
+      <View style={{ padding: 25 }}>
+        <TextField
+          autoFocus
+          id="phonenumber"
+          label="Phone number"
+          onChangeText={value => this.setState({ phoneNumber: value })}
+          placeholder={"Phone number ... "}
+          value={phoneNumber}
+        />
+
+        <TextField
+          autoFocus
+          id="sname"
+          label="Phone number"
+          onChangeText={value => this.setState({ phoneNumber: value })}
+          placeholder={"Phone number ... "}
+          value={phoneNumber}
+        />
+
+        <SpinnerButton
+          buttonStyle={[
+            styles.buttonStyle,
+            {
+              backgroundColor: "#0d47a1",
+              borderRadius: 50,
+              width: 200
+            }
+          ]}
+          //  isLoading={this.state.pacmanLoading}
+          //spinnerType="PacmanIndicator"
+          onPress={this.signIn}
+        >
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "center",
+              alignItems: "center"
+            }}
+          >
+            <Fa5 name={"sign-in-alt"} size={30} color="#fff" />
+            <Text style={{ color: "white", paddingHorizontal: 10 }}>
+              Phone SignIn
+            </Text>
+          </View>
+        </SpinnerButton>
+      </View>
+    );
+  }
 
   renderMessage() {
     const { message } = this.state;
@@ -283,26 +309,64 @@ class PhoneLogin extends Component {
     if (!message.length) return null;
 
     return (
-      <Text
-        style={{
-          padding: 5,
-          backgroundColor: "#fff",
-          color: this.state.msgColor,
-          height: 70,
-          fontSize: 14
-        }}
-      >
+      <Text style={{ padding: 5, backgroundColor: "#000", color: "#fff" }}>
         {message}
       </Text>
     );
   }
+
+  renderVerificationCodeInput() {
+    const { codeInput } = this.state;
+
+    return (
+      <View style={{ marginTop: 25, padding: 25 }}>
+        <Text>Enter verification code below:</Text>
+        <TextInput
+          autoFocus
+          style={{ height: 40, marginTop: 15, marginBottom: 15 }}
+          onChangeText={value => this.setState({ codeInput: value })}
+          placeholder={"Code ... "}
+          value={codeInput}
+        />
+        <Button
+          title="Confirm Code"
+          color="#841584"
+          onPress={this.confirmCode}
+        />
+      </View>
+    );
+  }
+  _onPress = articleId => () => {
+    /* 1. Navigate to the Details route with params */
+
+    this.setState({ loadL: true });
+
+    axios
+      .get("https://youthevoice.com/getarticles", {
+        params: {
+          articleId: articleId
+        }
+      })
+      .then(res => {
+        console.log(res.data);
+        this.setState({
+          loadL: false
+        });
+        this.props.navigation.navigate("DetailArticle", {
+          datailData: res.data
+        });
+      })
+      .catch(error => {
+        this.setState({ error, loadL: false });
+      });
+  };
 
   validatePhone = phone => {
     console.log(phone);
 
     const phoneNum = /^(?:(?:\+|0{0,2})91(\s*[\-]\s*)?|[0]?)?[789]\d{9}$/;
     if (phoneNum.test(phone)) {
-      this.setState({ validPhone: true, phoneNumber: "+91" + phone });
+      this.setState({ validPhone: true, phoneNumber: phone });
       console.log("matched");
     } else {
       this.setState({ validPhone: false });
@@ -314,7 +378,7 @@ class PhoneLogin extends Component {
 
   validateSName = sname => {
     if (/\S/.test(sname)) {
-      this.setState({ validSname: true, sname: sname });
+      this.setState({ validSname: true });
       console.log("matched");
     } else {
       this.setState({ validSname: false });
@@ -325,7 +389,7 @@ class PhoneLogin extends Component {
   };
 
   render() {
-    const { userVerified, codeValidation, codeSent } = this.state;
+    const { userVerified, codeValidation } = this.state;
     const { navigation } = this.props;
     const articleID = navigation.getParam("articleID", "");
 
@@ -342,80 +406,97 @@ class PhoneLogin extends Component {
             </View>
           </TouchableOpacity>
           <View>
-            <BorderlessButton>
+            <BorderlessButton
+              onPress={() => this.props.navigation.toggleDrawer()}
+            >
               <Icon name="ios-search" color="#ffffff" size={30} />
             </BorderlessButton>
           </View>
         </View>
         <View style={{ flex: 1 }}>
           {this.renderMessage()}
-          {!userVerified && !codeSent && (
-            <View style={{ alignItems: "center", justifyContent: "center" }}>
-              <Input
+          {!userVerified && !codeValidation && (
+            <View style={{ padding: 25 }}>
+              <TextField
                 autoFocus
                 id="phonenumber"
-                containerStyle={{ paddingHorizontal: 20, paddingVertical: 30 }}
-                placeholder="PHONE NUMBER"
-                leftIcon={
-                  <Fa5
-                    name="blender-phone"
-                    size={24}
-                    color={this.state.validPhone ? "green" : "red"}
-                  />
-                }
-                errorStyle={{ color: this.state.validPhone ? "green" : "red" }}
-                errorMessage="ENTER A VALID PHONE NUMBER"
-                onChangeText={phone => this.validatePhone(phone)}
+                label="Phone number"
+                onChangeText={value => this.setState({ phoneNumber: value })}
+                placeholder={"Phone number ... "}
+                value={this.state.phoneNumber}
               />
 
-              <Input
-                containerStyle={{ paddingHorizontal: 20, paddingVertical: 30 }}
-                placeholder="SHORT NAME"
-                leftIcon={
-                  <Fa5
-                    name="signature"
-                    size={24}
-                    color={this.state.validSname ? "green" : "red"}
-                  />
-                }
-                errorStyle={{ color: this.state.validSname ? "green" : "red" }}
-                errorMessage="ENTER A VALID PHONE NUMBER"
-                onChangeText={sname => this.validateSName(sname)}
+              <TextField
+                id="sname"
+                label="Short Name"
+                onChangeText={phone => this.setState({ phone })}
               />
 
-              <Button1
-                buttonStyle={styles.LoginButton}
-                icon={<Fa5 name="sign-in-alt" size={25} color="white" />}
-                iconLeft
-                title=" SEND OTP"
+              <SpinnerButton
+                buttonStyle={[
+                  styles.buttonStyle,
+                  {
+                    backgroundColor: "#0d47a1",
+                    borderRadius: 50,
+                    width: 200
+                  }
+                ]}
+                isLoading={this.state.dotLoading}
+                spinnerType="DotIndicator"
                 onPress={this.signIn}
-                disabled={
-                  this.state.validPhone && this.state.validSname ? false : true
-                }
-                loading={this.state.otpLoading}
-              />
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignItems: "center"
+                  }}
+                >
+                  <Fa5 name={"sign-in-alt"} size={30} color="#fff" />
+                  <Text style={{ color: "white", paddingHorizontal: 10 }}>
+                    Phone SignIn
+                  </Text>
+                </View>
+              </SpinnerButton>
             </View>
           )}
           {!userVerified && codeSent && (
-            <View style={{ alignItems: "center", justifyContent: "center" }}>
-              <Input
+            <View style={{ padding: 25 }}>
+              <TextField
                 autoFocus
                 id="veriftcode"
-                containerStyle={{ paddingHorizontal: 20, paddingVertical: 30 }}
-                placeholder="Enter verification code"
-                leftIcon={<Fa5 name="blender-phone" size={24} color="green" />}
+                label="Enter verification code"
                 onChangeText={value => this.setState({ verifyCode: value })}
                 value={this.state.verifyCode}
+                dataDetectorTypes="phoneNumber"
               />
 
-              <Button1
-                buttonStyle={styles.LoginButton}
-                icon={<Fa5 name="sign-in-alt" size={15} color="white" />}
-                iconLeft
-                title=" ENTER OTP"
+              <SpinnerButton
+                buttonStyle={[
+                  styles.buttonStyle,
+                  {
+                    backgroundColor: "#0d47a1",
+                    borderRadius: 50,
+                    width: 200
+                  }
+                ]}
+                isLoading={this.state.skypeLoading}
+                spinnerType="SkypeIndicator"
                 onPress={this.verifyCode}
-                loading={this.state.otpLoading}
-              />
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignItems: "center"
+                  }}
+                >
+                  <Fa5 name={"check-circle"} size={30} color="#fff" />
+                  <Text style={{ color: "white", paddingHorizontal: 10 }}>
+                    Code Verify
+                  </Text>
+                </View>
+              </SpinnerButton>
             </View>
           )}
         </View>
@@ -423,17 +504,6 @@ class PhoneLogin extends Component {
     );
   }
 }
-
-const mapDispathToProps = dispatch => {
-  return {
-    userLoginDetails: data => dispatch(loginDetails(data))
-  };
-};
-
-export default connect(
-  null,
-  mapDispathToProps
-)(PhoneLogin);
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#e3f2fd" },
@@ -522,13 +592,6 @@ const styles = StyleSheet.create({
   buttonStyle: {
     borderRadius: 10,
     margin: 20,
-    width: 200
-  },
-  LoginButton: {
-    backgroundColor: "#0d47a1",
-    borderRadius: 50,
-    padding: 10,
-    height: 50,
     width: 200
   }
 });

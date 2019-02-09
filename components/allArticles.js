@@ -28,8 +28,10 @@ import Loader from "./loader";
 var debounce = require("lodash.debounce");
 //import ShareArticle from "./ashare";
 import DetailArticle from "./detailArticle";
+import { connect } from "react-redux";
+import { fetchLoginDetails } from "./store/actions";
 
-export default class Articles extends React.Component {
+class Articles extends React.Component {
   constructor(props) {
     super(props);
 
@@ -47,6 +49,7 @@ export default class Articles extends React.Component {
   }
 
   async componentDidMount() {
+    this.props.afetchLoginDetails();
     this.getAllArticles();
     firebase.messaging().subscribeToTopic("ytv");
     this.checkPermission();
@@ -455,11 +458,7 @@ export default class Articles extends React.Component {
               <BorderlessButton
                 onPress={() => this.props.navigation.navigate("ChooseLang")}
               >
-                <Fa5
-                  name="american-sign-language-interpreting"
-                  color="#ffffff"
-                  size={25}
-                />
+                <Fa5 name="user-secret" color="#ffffff" size={20} />
               </BorderlessButton>
             </View>
           </View>
@@ -509,6 +508,17 @@ export default class Articles extends React.Component {
     );
   }
 }
+
+const mapDispathToProps = dispatch => {
+  return {
+    afetchLoginDetails: () => dispatch(fetchLoginDetails())
+  };
+};
+
+export default connect(
+  null,
+  mapDispathToProps
+)(Articles);
 
 const styles = StyleSheet.create({
   container: {

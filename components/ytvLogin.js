@@ -88,7 +88,7 @@ export default class ytvLogin extends Component {
           </View>
           <View style={styles.card}>
             <TouchableOpacity
-              //onPress={() => this.props.navigation.goBack()}
+              onPress={this._onPressFLogin(articleID)}
               style={styles.cardHeader}
             >
               <View style={{ flexDirection: "row", alignItems: "center" }}>
