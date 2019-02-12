@@ -1,171 +1,175 @@
 import React, { Component } from "react";
+
 import {
-  View,
-  Text,
+  AppRegistry,
   StyleSheet,
-  ScrollView,
-  Alert,
-  Image,
-  TouchableOpacity,
-  NativeModules,
-  Dimensions,
+  Text,
+  View,
+  TouchableHighlight,
+  Platform,
+  PermissionsAndroid,
   SafeAreaView,
   StatusBar,
-  Platform,
-  TextInput,
-  PermissionsAndroid
+  TouchableOpacity,
+  ScrollView
 } from "react-native";
 
-import Video from "react-native-video";
 import Sound from "react-native-sound";
-
-var ImagePicker = NativeModules.ImageCropPicker;
-import Btn from "react-native-micro-animated-button";
-
-//import Share from "react-native-share";
-import Share, { ShareSheet, Button } from "react-native-share";
+import axios from "axios";
+import { AudioRecorder, AudioUtils } from "react-native-audio";
+import { Input, Divider, Button as Button1 } from "react-native-elements";
 import Fa5 from "react-native-vector-icons/FontAwesome5";
-//import images from "./imageBase64";
 import Icon from "react-native-vector-icons/Ionicons";
 import { RectButton, BorderlessButton } from "react-native-gesture-handler";
 var RNFS = require("react-native-fs");
-
-var RNFS = require("react-native-fs");
-
-import SoundRecorder from "react-native-sound-recorder";
-import SoundPlayer from "react-native-sound-player";
-
-import SpinnerButton from "react-native-spinner-button";
 import ProgressCircle from "react-native-progress-circle";
-
 import RNFetchBlob from "rn-fetch-blob";
+import { connect } from "react-redux";
+import UUIDGenerator from "react-native-uuid-generator";
 
-// import SpinnerButton from './components/SpinnerButton';
-const colors = [
-  "#893346",
-  "#1aafb8",
-  "#bf57c3",
-  "#dead00",
-  "#666666",
-  "#4CA0F7",
-  "#123456",
-  "#F87217"
-];
+class VoiceAudio extends Component {
+  state = {
+    currentTime: 0.0,
+    recording: false,
+    paused: false,
+    stoppedRecording: false,
+    finished: false,
+    audioPath: RNFS.DocumentDirectoryPath + "/youthevoiceAudio.mp4",
+    hasPermission: undefined,
+    isUploading: false,
+    audioPath: RNFS.DocumentDirectoryPath + "/youthevoicedotcom.mp4",
+    fileName: this.props.userId + "youthevoicedotcom.mp4",
+    onlyFileName: this.props.userId + "youthevoicedotcom",
+    uploadStatus: 0,
+    commentText: ""
+  };
 
-export default class ImagePick extends Component {
-  constructor() {
-    super();
-    this.state = {
-      image: null,
-      images: null,
-      pulseLoading: false,
-      pacmanLoading: false,
-      waveLoading: false,
-      uploadStatus: 0,
-      uploading: false,
-      uploadCancel: false,
-      stopRecording: false,
-      isRecording: false,
-      barLoading: false,
-      isPlaying: false,
-      skypeLoading: false,
-      audioPath: RNFS.DocumentDirectoryPath + "/youthevoicedotcom.mp4",
-      fileName: "youthevoicedotcom.mp4",
-      onlyFileName: "youthevoicedotcom",
-      soundObj: null,
-      materialLoading: false,
-      isUploading: false,
-      uploadStatus: 0
-    };
+  prepareRecordingPath(audioPath) {
+    AudioRecorder.prepareRecordingAtPath(audioPath, {
+      SampleRate: 48000,
+      Channels: 1,
+      AudioQuality: "High",
+      AudioEncoding: "aac",
+      AudioEncodingBitRate: 32000
+    });
   }
 
   componentDidMount() {
-    SoundPlayer.onFinishedPlaying(success => {
-      // success is true when the sound is played
-      this.setState({ barLoading: false, isPlaying: false });
-      console.log("finished playing", success);
+    AudioRecorder.requestAuthorization().then(isAuthorised => {
+      this.setState({ hasPermission: isAuthorised });
+
+      if (!isAuthorised) return;
+
+      this.prepareRecordingPath(this.state.audioPath);
+
+      AudioRecorder.onProgress = data => {
+        this.setState({ currentTime: Math.floor(data.currentTime) });
+      };
+
+      AudioRecorder.onFinished = data => {
+        // Android callback comes in the form of a promise instead.
+        if (Platform.OS === "ios") {
+          this._finishRecording(
+            data.status === "OK",
+            data.audioFileURL,
+            data.audioFileSize
+          );
+        }
+      };
     });
   }
 
-  componentWillUnmount() {
-    SoundPlayer.unmount();
+  async componentWillUnmount() {
+    if (this.state.recording) {
+      try {
+        const filePath = await AudioRecorder.stopRecording();
+      } catch (error) {
+        console.error(error);
+      }
+    }
   }
 
-  record = () => {
-    this.setState({ pacmanLoading: true, isRecording: true });
+  _stop = async () => {
+    if (!this.state.recording) {
+      console.warn("Can't stop, not recording!");
+      return;
+    }
 
-    SoundRecorder.start(
-      //RNFS.DocumentDirectoryPath + "/youthevoicedotcom.mp4"
-      this.state.audioPath
-    ).then(function() {
-      console.log("started recording");
-      console.log(RNFS.DocumentDirectoryPath);
-    });
-  };
+    this.setState({ stoppedRecording: true, recording: false, paused: false });
 
-  stopRecord = () => {
-    this.setState({ waveLoading: true });
-    SoundRecorder.stop().then(result => {
-      this.setState({
-        pacmanLoading: false,
-        isRecording: false,
-        waveLoading: false,
-        barLoading: false
-      });
-      console.log("stopped recording, audio file saved at: " + result.path);
-    });
-  };
-
-  play1 = () => {
-    this.setState({ barLoading: true, isPlaying: true });
-    //  alert("Jeevannnnn");
     try {
-      console.log("Playing File...");
-      // play the file tone.mp3
-      //SoundPlayer.playSoundFile("tone", "mp3");
-      // or play from url
-      // SoundPlayer.playUrl("https://youthevoice.com/test123.mp4");
-      SoundPlayer.playSoundFile(this.state.audioPath, "mp4");
-    } catch (e) {
-      console.log(`cannot play the sound file`, e);
+      const filePath = await AudioRecorder.stopRecording();
+
+      if (Platform.OS === "android") {
+        this._finishRecording(true, filePath);
+      }
+      // this.setState({ stoppedRecording: true });
+      return filePath;
+    } catch (error) {
+      console.error(error);
     }
   };
-  play = () => {
-    this.setState({ barLoading: true, isPlaying: true });
-    setTimeout(() => {
-      var sound = new Sound(this.state.audioPath, "", error => {
-        if (error) {
-          console.log("failed to load the sound", error);
-        }
-      });
-      this.setState({ soundObj: sound });
-      setTimeout(() => {
-        sound.play(success => {
-          if (success) {
-            this.setState({ barLoading: false, isPlaying: false });
-            console.log("successfully finished playing");
-            console.log(this.state.audioPath);
-            // alert(this.state.audioPath);
-          } else {
-            console.log("playback failed due to audio decoding errors");
-          }
-        });
-      }, 100);
-    }, 100);
+
+  _record = async () => {
+    if (this.state.recording) {
+      console.warn("Already recording!");
+      return;
+    }
+
+    if (!this.state.hasPermission) {
+      console.warn("Can't record, no permission granted!");
+      return;
+    }
+
+    AudioRecorder.onProgress = data => {
+      this.setState({ currentTime: Math.floor(data.currentTime) });
+    };
+
+    if (this.state.stoppedRecording) {
+      this.prepareRecordingPath(this.state.audioPath);
+    }
+
+    this.setState({ recording: true, paused: false });
+
+    try {
+      const filePath = await AudioRecorder.startRecording();
+    } catch (error) {
+      console.error(error);
+    }
   };
 
-  stopPlay1 = () => {
-    SoundPlayer.stop();
-    this.setState({ barLoading: false, isPlaying: false });
+  _finishRecording(didSucceed, filePath, fileSize) {
+    this.setState({ finished: didSucceed });
+    console.log(
+      `Finished recording of duration ${
+        this.state.currentTime
+      } seconds at path: ${filePath} and size of ${fileSize || 0} bytes`
+    );
+  }
+
+  _playSound = () => {
+    this.props.navigation.navigate("PlaySound", {
+      fileUrl: this.state.audioPath
+    });
   };
 
-  stopPlay = () => {
-    this.state.soundObj.stop();
-    this.setState({ barLoading: false, isPlaying: false });
+  SecondsTohhmmss = totalSeconds => {
+    var hours = Math.floor(totalSeconds / 3600);
+    var minutes = Math.floor((totalSeconds - hours * 3600) / 60);
+    var seconds = totalSeconds - hours * 3600 - minutes * 60;
+
+    // round seconds
+    seconds = Math.round(seconds * 100) / 100;
+
+    var result = hours < 10 ? "0" + hours : hours;
+    result += ":" + (minutes < 10 ? "0" + minutes : minutes);
+    result += ":" + (seconds < 10 ? "0" + seconds : seconds);
+    return result;
   };
 
-  _updateRNFB = async () => {
+  _updateRNFB = async fileName => {
     //alert("Uoloaddddd");
+
     try {
       if (Platform.OS === "android") {
         const granted = await PermissionsAndroid.request(
@@ -188,8 +192,8 @@ export default class ImagePick extends Component {
             },
             [
               {
-                name: this.state.onlyFileName,
-                filename: this.state.fileName,
+                name: fileName,
+                filename: fileName + ".mp4",
 
                 // upload a file from asset is also possible in version >= 0.6.2
                 data: RNFetchBlob.wrap(this.state.audioPath)
@@ -249,10 +253,40 @@ export default class ImagePick extends Component {
     //console.log("from fun", err + taskid);
   };
 
+  _submitTextAudio = (articleId, screenName) => async () => {
+    _uuid = await UUIDGenerator.getRandomUUID();
+    console.log(_uuid);
+
+    axios
+      .post("https://youthevoice.com/postTextAudioComment", {
+        textComment: this.state.commentText,
+        audioId: "Flintstone",
+        userId: this.props.userId,
+        articleId: _uuid,
+        timeBeforeUpload: new Date(),
+        audioUpload: "",
+        timeAfterUpoad: ""
+      })
+      .then(function(response) {
+        this._updateRNFB(_uuid);
+        console.log(response);
+      })
+      .catch(function(error) {
+        console.log("errrorrrr", error);
+      });
+  };
+
   render() {
+    const { navigation } = this.props;
+    const articleId = navigation.getParam("articleId", "");
+    const screenName = navigation.getParam("screenName", "");
+
+    console.log("hghghghh", articleId);
+
     return (
       <SafeAreaView style={styles.container}>
         <StatusBar barStyle="dark-content" backgroundColor="#bf360c" />
+
         <View style={styles.headerBar}>
           <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
             <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -268,251 +302,182 @@ export default class ImagePick extends Component {
             </BorderlessButton>
           </View>
         </View>
-        <View style={styles.MainContainer}>
-          <TextInput
-            style={styles.TextInputStyleClass}
-            //underlineColorAndroid="transparent"
-            placeholder={"Add Your Voice..."}
-            placeholderTextColor={"#9E9E9E"}
-            numberOfLines={10}
-            multiline={true}
-          />
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "center",
-              paddingTop: 20
-            }}
-          >
-            <BorderlessButton>
-              <Text> Submit Comment </Text>
-            </BorderlessButton>
-            <BorderlessButton>
-              <Text style={{ paddingLeft: 10 }}> Cancel </Text>
-            </BorderlessButton>
-          </View>
-        </View>
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-around",
-            padding: 10
-          }}
-        >
-          {!this.state.isPlaying && !this.state.isUploading ? (
-            <TouchableOpacity style={styles.bottomBarItem}>
-              <SpinnerButton
-                buttonStyle={[
-                  styles.buttonStyle,
-                  { backgroundColor: "#0d47a1", borderRadius: 50, width: 125 }
-                ]}
-                isLoading={this.state.pacmanLoading}
-                spinnerType="PacmanIndicator"
-                onPress={this.record}
+        <ScrollView>
+          <View style={{ alignItems: "center", justifyContent: "center" }}>
+            <Button1
+              buttonStyle={styles.LoginButton}
+              icon={
+                <Fa5
+                  name="microphone-alt"
+                  size={25}
+                  color="white"
+                  style={{ paddingRight: 5 }}
+                />
+              }
+              iconLeft
+              title=" Start Recording"
+              onPress={this._record}
+              loading={this.state.recording}
+            />
+            <Text style={styles.progressText}>
+              Time Recorded: {this.SecondsTohhmmss(this.state.currentTime)}
+            </Text>
+            <Button1
+              buttonStyle={styles.LoginButton}
+              icon={
+                <Fa5
+                  name="microphone-alt-slash"
+                  size={15}
+                  color="white"
+                  style={{ paddingRight: 5 }}
+                />
+              }
+              iconLeft
+              title="Stop Recording"
+              onPress={this._stop}
+              // loading={this.state.stoppedRecording}
+              disabled={!this.state.recording}
+            />
+            <Button1
+              buttonStyle={styles.LoginButtonPlay}
+              icon={
+                <Fa5
+                  name="play"
+                  size={15}
+                  color="white"
+                  style={{ paddingRight: 5 }}
+                />
+              }
+              iconLeft
+              title="Play Recorded Voice"
+              onPress={this._playSound}
+              disabled={this.state.recording}
+            />
+            <Input
+              id="phonenumber"
+              label="Enter Your Voice..."
+              containerStyle={{ paddingHorizontal: 20, paddingVertical: 30 }}
+              // placeholder="YOUR VOICE..."
+              errorStyle={{ color: this.state.validPhone ? "green" : "red" }}
+              //errorMessage="ENTER YOUR VOICE"
+              multiline={true}
+              onChangeText={commentText => this.setState({ commentText })}
+            />
+            {!this.state.isUploading ? (
+              <Button1
+                buttonStyle={styles.LoginButtonUpload}
+                icon={
+                  <Fa5
+                    name="cloud-upload-alt"
+                    size={15}
+                    color="white"
+                    style={{ paddingRight: 5 }}
+                  />
+                }
+                iconLeft
+                title="Upload Your Voice"
+                onPress={this._submitTextAudio(articleId, screenName)}
+                disabled={this.state.recording}
+              />
+            ) : (
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-around",
+                  padding: 10,
+                  alignItems: "center"
+                }}
               >
-                <Fa5 name={"microphone-alt"} size={30} color="#fff" />
-              </SpinnerButton>
+                <TouchableOpacity onPress={this.startUploadCancel}>
+                  <View style={styles.bottomBarItem}>
+                    <Fa5 name="camera-retro" size={30} />
+                    <Text style={{ paddingVertical: 5 }}> cancel</Text>
+                  </View>
+                </TouchableOpacity>
 
-              {!this.state.pacmanLoading ? (
-                <Text>Start Recording</Text>
-              ) : (
-                <Text>Recording...</Text>
-              )}
-            </TouchableOpacity>
-          ) : (
-            <TouchableOpacity style={styles.bottomBarItem}>
-              <SpinnerButton
-                buttonStyle={[
-                  styles.buttonStyle,
-                  { backgroundColor: "#cccccc", borderRadius: 50, width: 125 }
-                ]}
-                isLoading={this.state.pacmanLoading}
-                spinnerType="PacmanIndicator"
-                // onPress={this.record}
-              >
-                <Fa5 name={"microphone-alt"} size={30} color="#fff" />
-              </SpinnerButton>
-
-              {!this.state.pacmanLoading ? (
-                <Text>Start Recording</Text>
-              ) : (
-                <Text>Recording...</Text>
-              )}
-            </TouchableOpacity>
-          )}
-
-          {this.state.isRecording ? (
-            <TouchableOpacity
-              style={styles.bottomBarItem}
-              onPress={this.stopRecord}
-            >
-              <SpinnerButton
-                buttonStyle={[
-                  styles.buttonStyle,
-                  { backgroundColor: "#e65100", borderRadius: 50, width: 125 }
-                ]}
-                isLoading={this.state.waveLoading}
-                spinnerType="WaveIndicator"
-                onPress={this.stopRecord}
-              >
-                <Fa5 name={"microphone-alt-slash"} size={30} color="#fff" />
-              </SpinnerButton>
-
-              <Text>Stop Recording</Text>
-            </TouchableOpacity>
-          ) : (
-            <TouchableOpacity style={styles.bottomBarItem}>
-              <SpinnerButton
-                buttonStyle={[
-                  styles.buttonStyle,
-                  { backgroundColor: "#cccccc", borderRadius: 50, width: 125 }
-                ]}
-                isLoading={this.state.waveLoading}
-                spinnerType="WaveIndicator"
-              >
-                <Fa5 name={"microphone-alt-slash"} size={30} color="#bcaaa4" />
-              </SpinnerButton>
-              <Text> </Text>
-            </TouchableOpacity>
-          )}
-        </View>
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-around",
-            padding: 10
-          }}
-        >
-          {this.state.isRecording || this.state.isUploading ? (
-            <TouchableOpacity style={styles.bottomBarItem}>
-              <SpinnerButton
-                buttonStyle={[
-                  styles.buttonStyle,
-                  { backgroundColor: "#cccccc", borderRadius: 50, width: 125 }
-                ]}
-                isLoading={this.state.barLoading}
-                spinnerType="BarIndicator"
-              >
-                <Fa5 name={"play"} size={30} color="#fff" />
-              </SpinnerButton>
-
-              <Text>Stop Recording</Text>
-            </TouchableOpacity>
-          ) : (
-            <TouchableOpacity style={styles.bottomBarItem}>
-              <SpinnerButton
-                buttonStyle={[
-                  styles.buttonStyle,
-                  { backgroundColor: "#1b5e20", borderRadius: 50, width: 125 }
-                ]}
-                isLoading={this.state.barLoading}
-                spinnerType="BarIndicator"
-                onPress={this.play}
-              >
-                <Fa5 name={"play"} size={30} color="#fff" />
-              </SpinnerButton>
-              <Text>Play</Text>
-            </TouchableOpacity>
-          )}
-          {!this.state.isRecording && this.state.isPlaying ? (
-            <TouchableOpacity style={styles.bottomBarItem}>
-              <SpinnerButton
-                buttonStyle={[
-                  styles.buttonStyle,
-                  { backgroundColor: "#e65100", borderRadius: 50, width: 125 }
-                ]}
-                isLoading={this.state.skypeLoading}
-                spinnerType="SkypeIndicator"
-                onPress={this.stopPlay}
-              >
-                <Fa5 name={"stop-circle"} size={30} color="#fff" />
-              </SpinnerButton>
-
-              <Text>Stop Recording</Text>
-            </TouchableOpacity>
-          ) : (
-            <TouchableOpacity style={styles.bottomBarItem}>
-              <SpinnerButton
-                buttonStyle={[
-                  styles.buttonStyle,
-                  { backgroundColor: "#cccccc", borderRadius: 50, width: 125 }
-                ]}
-                isLoading={this.state.skypeLoading}
-                spinnerType="SkypeIndicator"
-              >
-                <Fa5 name={"stop-circle"} size={30} color="#bcaaa4" />
-              </SpinnerButton>
-              <Text> </Text>
-            </TouchableOpacity>
-          )}
-        </View>
-
-        {!this.state.isRecording &&
-          !this.state.isPlaying &&
-          !this.state.isUploading && (
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "center",
-                padding: 10
-              }}
-            >
-              <TouchableOpacity style={styles.bottomBarItem}>
-                <SpinnerButton
-                  buttonStyle={[
-                    styles.buttonStyle,
-                    { backgroundColor: "#880e4f", borderRadius: 50, width: 125 }
-                  ]}
-                  isLoading={this.state.materialLoading}
-                  spinnerType="MaterialIndicator"
-                  onPress={this._updateRNFB}
+                <ProgressCircle
+                  percent={this.state.uploadStatus}
+                  radius={50}
+                  borderWidth={8}
+                  color="#3399FF"
+                  shadowColor="#999"
+                  bgColor="#fff"
                 >
-                  <Fa5 name={"cloud-upload-alt"} size={30} color="#fff" />
-                </SpinnerButton>
-
-                <Text>Stop Recording</Text>
-              </TouchableOpacity>
-            </View>
-          )}
-        {!this.state.isRecording &&
-          !this.state.isPlaying &&
-          this.state.isUploading && (
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-around",
-                padding: 10,
-                alignItems: "center"
-              }}
-            >
-              <TouchableOpacity onPress={this.startUploadCancel}>
-                <View style={styles.bottomBarItem}>
-                  <Fa5 name="camera-retro" size={30} />
-                  <Text style={{ paddingVertical: 5 }}> cancel</Text>
-                </View>
-              </TouchableOpacity>
-
-              <ProgressCircle
-                percent={this.state.uploadStatus}
-                radius={50}
-                borderWidth={8}
-                color="#3399FF"
-                shadowColor="#999"
-                bgColor="#fff"
-              >
-                <Text style={{ fontSize: 18 }}>
-                  {this.state.uploadStatus + "%"}
-                </Text>
-              </ProgressCircle>
-            </View>
-          )}
+                  <Text style={{ fontSize: 18 }}>
+                    {this.state.uploadStatus + "%"}
+                  </Text>
+                </ProgressCircle>
+              </View>
+            )}
+          </View>
+        </ScrollView>
       </SafeAreaView>
     );
   }
 }
 
-const styles = StyleSheet.create({
+const mapStateToProps = state => {
+  return {
+    isLoggedIn: state.isLoggedIn,
+    authMethod: state.authMethod,
+    userId: state.userId,
+    sName: state.sName,
+    isAuthenticated: state.isAuthenticated
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  null
+)(VoiceAudio);
+
+var styles = StyleSheet.create({
+  controls: {
+    justifyContent: "center",
+    alignItems: "center",
+    flex: 1
+  },
+  progressText: {
+    paddingTop: 5,
+    paddingBottom: 10,
+    fontSize: 20,
+    color: "#000"
+  },
+  button: {
+    padding: 20
+  },
+  disabledButtonText: {
+    color: "#eee"
+  },
+  buttonText: {
+    fontSize: 20,
+    color: "#fff"
+  },
+  activeButtonText: {
+    fontSize: 20,
+    color: "#B81F00"
+  },
+  LoginButton: {
+    backgroundColor: "#4CAF50",
+    borderRadius: 50,
+    margin: 10,
+    height: 50,
+    width: 200
+  },
+  LoginButtonPlay: {
+    backgroundColor: "#9E9E9E",
+    borderRadius: 50,
+    margin: 10,
+    height: 50,
+    width: 200
+  },
+  LoginButtonUpload: {
+    backgroundColor: "#FF9800",
+    borderRadius: 50,
+    margin: 10,
+    height: 50,
+    width: 200
+  },
   container: {
     flex: 1,
     justifyContent: "center",
@@ -609,24 +574,5 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     backgroundColor: "#FFFFFF",
     height: 150
-  },
-  safeArea: {
-    backgroundColor: "#F5FCFF"
-  },
-  buttonText: {
-    fontSize: 20,
-    textAlign: "center",
-    color: "white",
-    paddingHorizontal: 20
-  },
-  buttonStyle: {
-    borderRadius: 10,
-    margin: 20,
-    width: 200
-  },
-  instructions: {
-    textAlign: "center",
-    color: "#333333",
-    marginBottom: 5
   }
 });

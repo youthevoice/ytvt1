@@ -414,7 +414,7 @@ class Articles extends React.Component {
         <TouchableOpacity
           onPress={() =>
             this.props.navigation.navigate("YtvShare", {
-              datailData: this.state.data
+              datailData: item.articlePk
             })
           }
         >
@@ -428,7 +428,8 @@ class Articles extends React.Component {
         <TouchableOpacity
           onPress={() =>
             this.props.navigation.navigate("YtvVoice", {
-              datailData: this.state.data
+              articleId: item.articleId,
+              screenName: "AllArticles"
             })
           }
         >

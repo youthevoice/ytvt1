@@ -42,11 +42,16 @@ import VoiceImage from "./voiceImage";
 import VoiceAudio from "./voiceAudio";
 import VoiceVideo from "./voiceVideo";
 import ChooseLang from "./chooseLang";
+import AllComments from "./comments";
+import CommentReplies from "./commentReplies";
+import PlaySound from "./playSound";
 
 import { createStore, applyMiddleware } from "redux";
 import thunk from "redux-thunk";
 import { Provider } from "react-redux";
 import reducer from "./store/reducer";
+
+import TSound1 from "./soundT1";
 
 import AsyncText from "./asyncSTest";
 
@@ -104,6 +109,15 @@ const Articles = createStackNavigator(
     },
     ChooseLang: {
       screen: ChooseLang
+    },
+    AllComments: {
+      screen: AllComments
+    },
+    CommentReplies: {
+      screen: CommentReplies
+    },
+    PlaySound: {
+      screen: PlaySound
     }
   },
   {

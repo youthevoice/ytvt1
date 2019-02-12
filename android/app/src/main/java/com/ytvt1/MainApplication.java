@@ -33,6 +33,7 @@ import com.vinzscam.reactnativefileviewer.RNFileViewerPackage;
 import com.kevinresol.react_native_sound_recorder.RNSoundRecorderPackage;
 import io.invertase.firebase.messaging.RNFirebaseMessagingPackage;
 import io.invertase.firebase.notifications.RNFirebaseNotificationsPackage;
+import io.github.traviskn.rnuuidgenerator.RNUUIDGeneratorPackage;
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
@@ -88,7 +89,8 @@ public class MainApplication extends Application implements ReactApplication,  S
               new RNSoundRecorderPackage(),
               new RNFirebaseMessagingPackage(),
               new RNFirebaseNotificationsPackage(),
-      new LinearGradientPackage()
+      new LinearGradientPackage(),
+              new RNUUIDGeneratorPackage()
       // new TwitterSigninPackage()
       );
     }

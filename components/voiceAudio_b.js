@@ -12,7 +12,8 @@ import {
   SafeAreaView,
   StatusBar,
   Platform,
-  TextInput
+  TextInput,
+  PermissionsAndroid
 } from "react-native";
 
 import Video from "react-native-video";
@@ -73,7 +74,8 @@ export default class ImagePick extends Component {
       onlyFileName: "youthevoicedotcom",
       soundObj: null,
       materialLoading: false,
-      isUploading: false
+      isUploading: false,
+      uploadStatus: 0
     };
   }
 
@@ -162,7 +164,8 @@ export default class ImagePick extends Component {
     this.setState({ barLoading: false, isPlaying: false });
   };
 
-  _updateRNFB = (realPath, fileName1, onlyfileName) => async () => {
+  _updateRNFB = async () => {
+    //alert("Uoloaddddd");
     try {
       if (Platform.OS === "android") {
         const granted = await PermissionsAndroid.request(
@@ -172,7 +175,11 @@ export default class ImagePick extends Component {
         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
           console.log("upload started....");
           this.setState({ isUploading: true });
-          console.log(realPath, fileName1, onlyfileName);
+          console.log(
+            this.state.audioPath,
+            this.state.onlyFileName,
+            this.state.fileName
+          );
           task = RNFetchBlob.fetch(
             "POST",
             "https://youthevoice.com/postcomment",
@@ -182,7 +189,7 @@ export default class ImagePick extends Component {
             [
               {
                 name: this.state.onlyFileName,
-                filename: this.state.audioPath.fileName,
+                filename: this.state.fileName,
 
                 // upload a file from asset is also possible in version >= 0.6.2
                 data: RNFetchBlob.wrap(this.state.audioPath)
@@ -202,7 +209,8 @@ export default class ImagePick extends Component {
             .then(res => {
               console.log("from resppooo", res.text());
               this.setState({
-                uploadStatus: 100
+                uploadStatus: 100,
+                isUploading: false
               });
             })
             .catch(err => {
@@ -212,15 +220,33 @@ export default class ImagePick extends Component {
       }
     } catch (e) {
       console.log("Cancellllll", e);
-      this.setState({ task: "" });
+      this.setState({ task: "", isUploading: false });
     }
   };
 
-  uploadCancel = (err, taskid) => {
+  startUploadCancel = () => {
+    Alert.alert(
+      "Upload Cancel",
+      "Do you want to cancel Upload...",
+      [
+        {
+          text: "Cancel",
+          onPress: () => {
+            console.log("Cancel Pressed");
+            return;
+          },
+          style: "cancel"
+        },
+        { text: "OK", onPress: () => this.uploadCancel() }
+      ],
+      { cancelable: false }
+    );
+  };
+  uploadCancel = () => {
     this.state.task.cancel();
-    this.setState({ uploadCancel: true, uploading: false });
+    this.setState({ uploadCancel: true, isUploading: false });
     console.log("from state", this.state.task);
-    console.log("from fun", err + taskid);
+    //console.log("from fun", err + taskid);
   };
 
   render() {
@@ -274,7 +300,7 @@ export default class ImagePick extends Component {
             padding: 10
           }}
         >
-          {!this.state.isPlaying ? (
+          {!this.state.isPlaying && !this.state.isUploading ? (
             <TouchableOpacity style={styles.bottomBarItem}>
               <SpinnerButton
                 buttonStyle={[
@@ -358,7 +384,7 @@ export default class ImagePick extends Component {
             padding: 10
           }}
         >
-          {this.state.isRecording ? (
+          {this.state.isRecording || this.state.isUploading ? (
             <TouchableOpacity style={styles.bottomBarItem}>
               <SpinnerButton
                 buttonStyle={[
@@ -422,48 +448,65 @@ export default class ImagePick extends Component {
           )}
         </View>
 
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "center",
-            padding: 10
-          }}
-        >
-          {!this.state.isRecording &&
+        {!this.state.isRecording &&
           !this.state.isPlaying &&
-          !this.state.isUploading ? (
-            <TouchableOpacity style={styles.bottomBarItem}>
-              <SpinnerButton
-                buttonStyle={[
-                  styles.buttonStyle,
-                  { backgroundColor: "#880e4f", borderRadius: 50, width: 125 }
-                ]}
-                isLoading={this.state.materialLoading}
-                spinnerType="MaterialIndicator"
-                onPress={this._updateRNFB}
-              >
-                <Fa5 name={"cloud-upload-alt"} size={30} color="#fff" />
-              </SpinnerButton>
+          !this.state.isUploading && (
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "center",
+                padding: 10
+              }}
+            >
+              <TouchableOpacity style={styles.bottomBarItem}>
+                <SpinnerButton
+                  buttonStyle={[
+                    styles.buttonStyle,
+                    { backgroundColor: "#880e4f", borderRadius: 50, width: 125 }
+                  ]}
+                  isLoading={this.state.materialLoading}
+                  spinnerType="MaterialIndicator"
+                  onPress={this._updateRNFB}
+                >
+                  <Fa5 name={"cloud-upload-alt"} size={30} color="#fff" />
+                </SpinnerButton>
 
-              <Text>Stop Recording</Text>
-            </TouchableOpacity>
-          ) : (
-            <TouchableOpacity style={styles.bottomBarItem}>
-              <SpinnerButton
-                buttonStyle={[
-                  styles.buttonStyle,
-                  { backgroundColor: "#cccccc", borderRadius: 50, width: 125 }
-                ]}
-                isLoading={this.state.materialLoading}
-                spinnerType="MaterialIndicator"
-                //onPress={this.play}
-              >
-                <Fa5 name={"cloud-upload-alt"} size={30} color="#fff" />
-              </SpinnerButton>
-              <Text>Upload...</Text>
-            </TouchableOpacity>
+                <Text>Stop Recording</Text>
+              </TouchableOpacity>
+            </View>
           )}
-        </View>
+        {!this.state.isRecording &&
+          !this.state.isPlaying &&
+          this.state.isUploading && (
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-around",
+                padding: 10,
+                alignItems: "center"
+              }}
+            >
+              <TouchableOpacity onPress={this.startUploadCancel}>
+                <View style={styles.bottomBarItem}>
+                  <Fa5 name="camera-retro" size={30} />
+                  <Text style={{ paddingVertical: 5 }}> cancel</Text>
+                </View>
+              </TouchableOpacity>
+
+              <ProgressCircle
+                percent={this.state.uploadStatus}
+                radius={50}
+                borderWidth={8}
+                color="#3399FF"
+                shadowColor="#999"
+                bgColor="#fff"
+              >
+                <Text style={{ fontSize: 18 }}>
+                  {this.state.uploadStatus + "%"}
+                </Text>
+              </ProgressCircle>
+            </View>
+          )}
       </SafeAreaView>
     );
   }

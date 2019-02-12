@@ -81,27 +81,36 @@ class YtvVoice extends Component {
       datailData: ""
     });
   };
-  voiceAudio = () => {
+  voiceAudio = (articleId, screenName) => () => {
     if (!this.props.isAuthenticated) {
       this.props.navigation.navigate("YtvLogin", {
         screenName: "VoiceAudio"
       });
     } else {
       this.props.navigation.navigate("VoiceAudio", {
-        articleId: ""
+        articleId: articleId,
+        screenName: screenName
       });
     }
   };
 
-  voiceVideo = () => {
+  voiceVideo = articleId => () => {
     this.props.navigation.navigate("VoiceVideo", {
       datailData: ""
     });
   };
 
+  allComments = () => {
+    this.props.navigation.navigate("AllComments", {
+      datailData: ""
+    });
+  };
+
   render() {
-    // const { navigation } = this.props;
-    //const detailData = navigation.getParam("datailData", {});
+    const { navigation } = this.props;
+    const articleId = navigation.getParam("articleId", "");
+    const screenName = navigation.getParam("screenName", "");
+    console.log("in ytv voivcsss", articleId);
 
     return (
       <SafeAreaView style={styles.container}>
@@ -130,7 +139,10 @@ class YtvVoice extends Component {
               padding: 10
             }}
           >
-            <TouchableOpacity style={{ alignItems: "center" }}>
+            <TouchableOpacity
+              style={{ alignItems: "center" }}
+              onPress={this.allComments}
+            >
               <View style={{ flexDirection: "row", alignItems: "center" }}>
                 <Icon name="md-chatboxes" size={40} color="#bf360c" />
                 <Text style={{ padding: 10, color: "#bf360c", fontSize: 20 }}>
@@ -175,7 +187,7 @@ class YtvVoice extends Component {
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.bottomBarItem}
-              onPress={() => this.voiceAudio()}
+              onPress={this.voiceAudio(articleId)}
             >
               <Fa5 name={"headphones"} size={40} color="#3b5998" />
               <Text style={{ paddingVertical: 5 }}> Voice Audio</Text>

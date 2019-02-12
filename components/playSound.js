@@ -17,7 +17,7 @@ const img_play = require("./resources/ui_play.png");
 const img_playjumpleft = require("./resources/ui_playjumpleft.png");
 const img_playjumpright = require("./resources/ui_playjumpright.png");
 
-export default class PlayerScreen extends React.Component {
+export default class PlaySound extends React.Component {
   constructor() {
     super();
     this.state = {
@@ -72,26 +72,22 @@ export default class PlayerScreen extends React.Component {
       this.sound.play(this.playComplete);
       this.setState({ playState: "playing" });
     } else {
-      // const filepath = this.props.navigation.state.params.filepath;
-      //  console.log("[Play]", filepath);
+      const filepath = this.props.navigation.getParam("fileUrl", "");
+      console.log("[Play]", filepath);
 
-      this.sound = new Sound(
-        "https://youthevoice.com/v3.mp3",
-        undefined,
-        error => {
-          if (error) {
-            console.log("failed to load the sound", error);
-            Alert.alert("Notice", "audio file error. (Error code : 1)");
-            this.setState({ playState: "paused" });
-          } else {
-            this.setState({
-              playState: "playing",
-              duration: this.sound.getDuration()
-            });
-            this.sound.play(this.playComplete);
-          }
+      this.sound = new Sound(filepath, undefined, error => {
+        if (error) {
+          console.log("failed to load the sound", error);
+          Alert.alert("Notice", "audio file error. (Error code : 1)");
+          this.setState({ playState: "paused" });
+        } else {
+          this.setState({
+            playState: "playing",
+            duration: this.sound.getDuration()
+          });
+          this.sound.play(this.playComplete);
         }
-      );
+      });
     }
   };
   playComplete = success => {
