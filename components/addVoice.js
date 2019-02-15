@@ -76,11 +76,19 @@ class YtvVoice extends Component {
       .catch(err => console.error("An error occurred", err));
   };
 
-  voiceImage = () => {
-    this.props.navigation.navigate("VoiceImage", {
-      datailData: ""
-    });
+  voiceImage = (articleId, screenName) => () => {
+    if (!this.props.isAuthenticated) {
+      this.props.navigation.navigate("YtvLogin", {
+        screenName: "VoiceImage"
+      });
+    } else {
+      this.props.navigation.navigate("VoiceImage", {
+        articleId: articleId,
+        screenName: screenName
+      });
+    }
   };
+
   voiceAudio = (articleId, screenName) => () => {
     if (!this.props.isAuthenticated) {
       this.props.navigation.navigate("YtvLogin", {
@@ -94,10 +102,17 @@ class YtvVoice extends Component {
     }
   };
 
-  voiceVideo = articleId => () => {
-    this.props.navigation.navigate("VoiceVideo", {
-      datailData: ""
-    });
+  voiceVideo = (articleId, screenName) => () => {
+    if (!this.props.isAuthenticated) {
+      this.props.navigation.navigate("VoiceVideo", {
+        screenName: "VoiceVideo"
+      });
+    } else {
+      this.props.navigation.navigate("VoiceVideo", {
+        articleId: articleId,
+        screenName: screenName
+      });
+    }
   };
 
   allComments = () => {
@@ -180,21 +195,21 @@ class YtvVoice extends Component {
           >
             <TouchableOpacity
               style={styles.bottomBarItem}
-              onPress={() => this.voiceImage()}
+              onPress={this.voiceImage(articleId, screenName)}
             >
               <Fa5 name={"images"} size={40} color="#25D366" />
               <Text style={{ paddingVertical: 5 }}> Voice-Images</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.bottomBarItem}
-              onPress={this.voiceAudio(articleId)}
+              onPress={this.voiceAudio(articleId, screenName)}
             >
               <Fa5 name={"headphones"} size={40} color="#3b5998" />
               <Text style={{ paddingVertical: 5 }}> Voice Audio</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.bottomBarItem}
-              onPress={() => this.voiceVideo()}
+              onPress={this.voiceVideo(articleId, screenName)}
             >
               <Fa5 name={"video"} size={40} color="#38A1F3" />
               <Text style={{ paddingVertical: 5 }}> Voice Video</Text>

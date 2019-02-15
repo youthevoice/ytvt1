@@ -144,6 +144,10 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-photo-view-ex')
+    implementation project(':react-native-image-picker')
+   
+
 
     implementation project(':react-native-snackbar')
     implementation project(':react-native-image-crop-picker')

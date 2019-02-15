@@ -14,8 +14,7 @@ import {
   TextInput,
   ScrollView,
   ActivityIndicator,
-  PermissionsAndroid,
-  Alert
+  PermissionsAndroid
 } from "react-native";
 import ImagePicker from "react-native-image-picker";
 import axios from "axios";
@@ -46,19 +45,14 @@ class VoiceImage extends React.Component {
     isUploading: false,
     uploadStatus: 0,
     uploadButton: false,
-    jobId: 0,
-    uploadCancel: false
+    jobId: 0
   };
 
   constructor(props) {
     super(props);
   }
 
-  componentDidMount() {
-    const dirs = RNFetchBlob.fs.dirs;
-    //  console.log("dcimmmm", dirs);
-    this.setState({ PictureDir: dirs.PictureDir });
-  }
+  componentDidMount() {}
 
   selectPhotoTapped = () => {
     const options = {
@@ -85,8 +79,7 @@ class VoiceImage extends React.Component {
         let image = {
           name: response.fileName.replace(/(.*)\.(.*?)$/, "$1"),
           filename: response.fileName,
-          //filepath: response.path
-          data: RNFetchBlob.wrap(response.path)
+          filepath: response.path
         };
         console.log("Response = ", response);
         newImages.push(image);
@@ -156,12 +149,7 @@ class VoiceImage extends React.Component {
     let filteredArray = this.state.imageData.filter(
       item => item.name !== imageId
     );
-    if (filteredArray.length > 0) {
-      console.log("Image Dataaaa", this.state.imageData.length);
-      this.setState({ imageData: filteredArray });
-    } else {
-      this.setState({ imageData: filteredArray, uploadButton: false });
-    }
+    this.setState({ imageData: filteredArray });
   };
 
   _submitTextAudio = (articleId, screenName) => async () => {
@@ -413,7 +401,7 @@ class VoiceImage extends React.Component {
                   }
                   iconLeft
                   title="Cancel "
-                  onPress={this.startUploadCancel}
+                  onPress={this.rnfsUploadCancel}
                   // loading={this.state.recording}
                 />
 
@@ -433,12 +421,11 @@ class VoiceImage extends React.Component {
             )}
             <Button1
               buttonStyle={styles.LoginButton}
-              type="outline"
               icon={
                 <Fa5
                   name="images"
                   size={25}
-                  //color="white"
+                  color="white"
                   style={{ paddingRight: 5 }}
                 />
               }
@@ -456,9 +443,7 @@ class VoiceImage extends React.Component {
                 <Image
                   containerStyle={{ padding: 5, borderRadius: 10 }}
                   resizeMode="contain"
-                  source={{
-                    uri: "file://" + this.state.PictureDir + "/" + item.filename
-                  }}
+                  source={{ uri: "file://" + item.filepath }}
                   style={{ width: null, height: 200, padding: 10 }}
                   PlaceholderContent={<ActivityIndicator />}
                 />
@@ -480,7 +465,7 @@ class VoiceImage extends React.Component {
                     iconLeft
                     title="Delete"
                     onPress={this.deleteImage(item.name)}
-                    disabled={this.state.isUploading}
+                    // loading={this.state.recording}
                   />
                   <Button1
                     buttonStyle={styles.DelButton}
@@ -496,10 +481,8 @@ class VoiceImage extends React.Component {
                     }
                     iconLeft
                     title="Check"
-                    onPress={this._checkImages(
-                      "file://" + this.state.PictureDir + "/" + item.filename
-                    )}
-                    disabled={this.state.isUploading}
+                    onPress={this._checkImages("file://" + item.filepath)}
+                    // loading={this.state.recording}
                   />
                 </View>
               </View>
@@ -560,7 +543,7 @@ var styles = StyleSheet.create({
     width: 100
   },
   LoginButton: {
-    // backgroundColor: "#4CAF50",
+    backgroundColor: "#4CAF50",
     borderRadius: 50,
     margin: 10,
     height: 50,

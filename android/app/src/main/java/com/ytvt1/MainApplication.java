@@ -4,6 +4,9 @@ import android.app.Application;
 
 import io.invertase.firebase.auth.RNFirebaseAuthPackage;
 import com.facebook.react.ReactApplication;
+import io.amarcruz.photoview.PhotoViewPackage;
+import com.imagepicker.ImagePickerPackage;
+import com.imagepicker.ImagePickerPackage;
 import com.azendoo.reactnativesnackbar.SnackbarPackage;
 
 import com.reactnative.ivpusic.imagepicker.PickerPackage;
@@ -35,6 +38,7 @@ import io.invertase.firebase.messaging.RNFirebaseMessagingPackage;
 import io.invertase.firebase.notifications.RNFirebaseNotificationsPackage;
 import io.github.traviskn.rnuuidgenerator.RNUUIDGeneratorPackage;
 
+
 import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
 import com.facebook.reactnative.androidsdk.FBSDKPackage;
@@ -64,6 +68,9 @@ public class MainApplication extends Application implements ReactApplication,  S
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new PhotoViewPackage(),
+            new ImagePickerPackage(),
+
 
             new SnackbarPackage(),
             new PickerPackage(),
@@ -91,7 +98,7 @@ public class MainApplication extends Application implements ReactApplication,  S
               new RNFirebaseNotificationsPackage(),
       new LinearGradientPackage(),
               new RNUUIDGeneratorPackage()
-      // new TwitterSigninPackage()
+
       );
     }
 

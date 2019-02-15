@@ -61,6 +61,8 @@
 		16EDD2A45751466D870F2D7F /* libRNSoundPlayer.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7BC7DDDBDBE145AF8B73DA11 /* libRNSoundPlayer.a */; };
 		A4E88F35211543998CE5D7F0 /* libimageCropPicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E7246CBF772C47CEB4191457 /* libimageCropPicker.a */; };
 		2126379B38054A8C9156A5C4 /* libRNSnackbar.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5445BF4A5668427CA0CE24A7 /* libRNSnackbar.a */; };
+		E5F60B2203764D42B4B56930 /* libRNImagePicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 29493D50FBCF44559787E2A5 /* libRNImagePicker.a */; };
+		0E36EC35BA5B4930BBBE17D7 /* libRNPhotoView.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3073DC6777D64234BE6DCB0C /* libRNPhotoView.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -398,6 +400,10 @@
 		E7246CBF772C47CEB4191457 /* libimageCropPicker.a */ = {isa = PBXFileReference; name = "libimageCropPicker.a"; path = "libimageCropPicker.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 		49B83E05D5F94FA58B987C62 /* RNSnackbar.xcodeproj */ = {isa = PBXFileReference; name = "RNSnackbar.xcodeproj"; path = "../node_modules/react-native-snackbar/ios/RNSnackbar.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
 		5445BF4A5668427CA0CE24A7 /* libRNSnackbar.a */ = {isa = PBXFileReference; name = "libRNSnackbar.a"; path = "libRNSnackbar.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		721B9369F6F848D69DE0D827 /* RNImagePicker.xcodeproj */ = {isa = PBXFileReference; name = "RNImagePicker.xcodeproj"; path = "../node_modules/react-native-image-picker/ios/RNImagePicker.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		29493D50FBCF44559787E2A5 /* libRNImagePicker.a */ = {isa = PBXFileReference; name = "libRNImagePicker.a"; path = "libRNImagePicker.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		C0541F9BA7E342D2B9B343F9 /* RNPhotoView.xcodeproj */ = {isa = PBXFileReference; name = "RNPhotoView.xcodeproj"; path = "../node_modules/react-native-photo-view-ex/ios/RNPhotoView.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		3073DC6777D64234BE6DCB0C /* libRNPhotoView.a */ = {isa = PBXFileReference; name = "libRNPhotoView.a"; path = "libRNPhotoView.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -433,6 +439,8 @@
 				16EDD2A45751466D870F2D7F /* libRNSoundPlayer.a in Frameworks */,
 				A4E88F35211543998CE5D7F0 /* libimageCropPicker.a in Frameworks */,
 				2126379B38054A8C9156A5C4 /* libRNSnackbar.a in Frameworks */,
+				E5F60B2203764D42B4B56930 /* libRNImagePicker.a in Frameworks */,
+				0E36EC35BA5B4930BBBE17D7 /* libRNPhotoView.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -628,6 +636,8 @@
 				FFF3258841564B7298767634 /* RNSoundPlayer.xcodeproj */,
 				ACAB0E4EF3B34F959AA93C09 /* imageCropPicker.xcodeproj */,
 				49B83E05D5F94FA58B987C62 /* RNSnackbar.xcodeproj */,
+				721B9369F6F848D69DE0D827 /* RNImagePicker.xcodeproj */,
+				C0541F9BA7E342D2B9B343F9 /* RNPhotoView.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1303,6 +1313,8 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1314,6 +1326,8 @@
 					"$(SRCROOT)/../node_modules/react-native-sound-player/ios",
 					"$(SRCROOT)/../node_modules/react-native-image-crop-picker/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-snackbar/ios",
+					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
+					"$(SRCROOT)/../node_modules/react-native-photo-view-ex/ios",
 				);
 			};
 			name = Debug;
@@ -1344,6 +1358,8 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1355,6 +1371,8 @@
 					"$(SRCROOT)/../node_modules/react-native-sound-player/ios",
 					"$(SRCROOT)/../node_modules/react-native-image-crop-picker/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-snackbar/ios",
+					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
+					"$(SRCROOT)/../node_modules/react-native-photo-view-ex/ios",
 				);
 			};
 			name = Release;
@@ -1385,6 +1403,8 @@
 					"$(SRCROOT)/../node_modules/react-native-sound-player/ios",
 					"$(SRCROOT)/../node_modules/react-native-image-crop-picker/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-snackbar/ios",
+					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
+					"$(SRCROOT)/../node_modules/react-native-photo-view-ex/ios",
 				);
 			};
 			name = Debug;
@@ -1414,6 +1434,8 @@
 					"$(SRCROOT)/../node_modules/react-native-sound-player/ios",
 					"$(SRCROOT)/../node_modules/react-native-image-crop-picker/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-snackbar/ios",
+					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
+					"$(SRCROOT)/../node_modules/react-native-photo-view-ex/ios",
 				);
 			};
 			name = Release;
@@ -1452,6 +1474,8 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1463,6 +1487,8 @@
 					"$(SRCROOT)/../node_modules/react-native-sound-player/ios",
 					"$(SRCROOT)/../node_modules/react-native-image-crop-picker/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-snackbar/ios",
+					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
+					"$(SRCROOT)/../node_modules/react-native-photo-view-ex/ios",
 				);
 			};
 			name = Debug;
@@ -1501,6 +1527,8 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1512,6 +1540,8 @@
 					"$(SRCROOT)/../node_modules/react-native-sound-player/ios",
 					"$(SRCROOT)/../node_modules/react-native-image-crop-picker/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-snackbar/ios",
+					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
+					"$(SRCROOT)/../node_modules/react-native-photo-view-ex/ios",
 				);
 			};
 			name = Release;
@@ -1549,6 +1579,8 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1560,6 +1592,8 @@
 					"$(SRCROOT)/../node_modules/react-native-sound-player/ios",
 					"$(SRCROOT)/../node_modules/react-native-image-crop-picker/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-snackbar/ios",
+					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
+					"$(SRCROOT)/../node_modules/react-native-photo-view-ex/ios",
 				);
 			};
 			name = Debug;
@@ -1597,6 +1631,8 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1608,6 +1644,8 @@
 					"$(SRCROOT)/../node_modules/react-native-sound-player/ios",
 					"$(SRCROOT)/../node_modules/react-native-image-crop-picker/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-snackbar/ios",
+					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
+					"$(SRCROOT)/../node_modules/react-native-photo-view-ex/ios",
 				);
 			};
 			name = Release;

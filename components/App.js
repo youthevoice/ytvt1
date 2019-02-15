@@ -38,13 +38,14 @@ import RAudio from "./recordAudio";
 import Noti from "./noti";
 import ImagePick from "./imagePick";
 import YtvVoice from "./addVoice";
-import VoiceImage from "./voiceImage";
+import VoiceImage1 from "./voiceImage";
 import VoiceAudio from "./voiceAudio";
 import VoiceVideo from "./voiceVideo";
 import ChooseLang from "./chooseLang";
 import AllComments from "./comments";
 import CommentReplies from "./commentReplies";
 import PlaySound from "./playSound";
+import CheckImages from "./checkImages";
 
 import { createStore, applyMiddleware } from "redux";
 import thunk from "redux-thunk";
@@ -58,6 +59,24 @@ import AsyncText from "./asyncSTest";
 const store = createStore(reducer, applyMiddleware(thunk));
 
 console.log("store....", store);
+
+const VoiceImage = createStackNavigator(
+  {
+    VoiceImage: {
+      screen: VoiceImage1
+    },
+    CheckImages: {
+      screen: CheckImages
+    }
+  },
+
+  {
+    headerMode: "none"
+  },
+  {
+    initialRouteName: "VoiceImage1"
+  }
+);
 
 const Articles = createStackNavigator(
   {

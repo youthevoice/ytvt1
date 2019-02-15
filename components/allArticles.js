@@ -459,7 +459,7 @@ class Articles extends React.Component {
               <BorderlessButton
                 onPress={() => this.props.navigation.navigate("ChooseLang")}
               >
-                <Fa5 name="user-secret" color="#ffffff" size={20} />
+                <Fa5 name="user-circle" color="#ffffff" size={20} />
               </BorderlessButton>
             </View>
           </View>

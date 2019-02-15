@@ -82,6 +82,7 @@ export default class PickFile extends Component {
       [
         {
           name: onlyfileName,
+
           filename: fileName1,
 
           // upload a file from asset is also possible in version >= 0.6.2

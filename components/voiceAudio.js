@@ -267,11 +267,11 @@ class VoiceAudio extends Component {
         audioUpload: "",
         timeAfterUpoad: ""
       })
-      .then(function(response) {
+      .then(response => {
         this._updateRNFB(_uuid);
         console.log(response);
       })
-      .catch(function(error) {
+      .catch(error => {
         console.log("errrorrrr", error);
       });
   };
