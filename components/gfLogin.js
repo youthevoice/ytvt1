@@ -22,9 +22,12 @@ import {
 import axios from "axios";
 import Fa5 from "react-native-vector-icons/FontAwesome5";
 
-import { SocialIcon } from "react-native-elements";
+//import { SocialIcon } from "react-native-elements";
+
+import { Input, Button as Button1 } from "react-native-elements";
+
 import Icon from "react-native-vector-icons/Ionicons";
-import Button1 from "react-native-button";
+
 import { RectButton, BorderlessButton } from "react-native-gesture-handler";
 
 import { GoogleSignin, statusCodes } from "react-native-google-signin";
@@ -32,19 +35,24 @@ import firebase from "react-native-firebase";
 import Loader from "./loader";
 import SpinnerButton from "react-native-spinner-button";
 
-export default class GS extends Component {
+import Snackbar from "react-native-snackbar";
+import { connect } from "react-redux";
+import { loginDetails } from "./store/actions";
+
+class GoogleLogin extends Component {
   constructor(props) {
     super(props);
     this.state = {
       userInfo: null,
-      error: null,
+      error: false,
+      errorMsg: null,
       loadL: false,
       dotLoading: false
     };
   }
 
   async componentDidMount() {
-    this.googleLogin();
+    // this.googleLogin();
   }
 
   _onPress = articleId => () => {
@@ -73,16 +81,60 @@ export default class GS extends Component {
       });
   };
 
+  signOut = async () => {
+    try {
+      await GoogleSignin.revokeAccess();
+      await GoogleSignin.signOut();
+      this.setState({ user: null }); // Remember to remove the user from your app's state as well
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   googleLogin = async () => {
     this.setState({ loadL: true, dotLoading: true });
     try {
       // add any configuration settings here:
       await GoogleSignin.configure();
+
+      const isSignedIn = await GoogleSignin.isSignedIn();
+
+      if (isSignedIn) {
+        await GoogleSignin.revokeAccess();
+        await GoogleSignin.signOut();
+      }
+
       var data;
       try {
         data = await GoogleSignin.signIn();
+        console.log("data....", data);
+
+        var acData = {
+          isAuthenticated: true,
+          authMethod: "Google Login",
+          userId: data.user.email,
+          sName: data.user.givenName
+        };
+        this.props.userLoginDetails(acData);
+
+        if (
+          this.state.screenName == "DetailArticle" &&
+          this.state.articleId != null &&
+          this.state.articleId != ""
+        ) {
+          this.props.navigation.navigate("DetailArticle", {
+            articleId: this.state.articleId
+          });
+        } else if (
+          this.state.screenName != null &&
+          this.state.screenName != ""
+        ) {
+          this.props.navigation.navigate(this.state.screenName);
+        } else {
+          this.props.navigation.navigate("AllArticles");
+        }
       } catch (error) {
-        this.setState({ loadL: false, dotLoading: false });
+        this.setState({ loadL: false, dotLoading: false, error: true });
         if (error.code === statusCodes.SIGN_IN_CANCELLED) {
           // sign in was cancelled
           Alert.alert("cancelled");
@@ -98,33 +150,6 @@ export default class GS extends Component {
           });
         }
       }
-
-      // create a new firebase credential with the token
-      const credential = firebase.auth.GoogleAuthProvider.credential(
-        data.idToken,
-        data.accessToken
-      );
-      // login with credential
-      const firebaseUserCredential = await firebase
-        .auth()
-        .signInWithCredential(credential);
-
-      console.log(JSON.stringify(firebaseUserCredential.user.toJSON()));
-      try {
-        await AsyncStorage.setItem("isLoggedIn", "yes");
-        await AsyncStorage.setItem(
-          "sName",
-          firebaseUserCredential.user.toJSON().displayName
-        );
-        await AsyncStorage.setItem("authMethod", "google");
-        await AsyncStorage.setItem(
-          "userId",
-          firebaseUserCredential.user.toJSON().email
-        );
-      } catch (error) {
-        console.log(error);
-      }
-      this._onPress("a2b3a780-eaed-4cbf-b373-38a46ce20455")();
     } catch (e) {
       this.setState({ loadL: false, dotLoading: false });
       console.error(e);
@@ -157,38 +182,34 @@ export default class GS extends Component {
         >
           <View>
             {/* <Loader loading={this.state.loadL} /> */}
-            <SpinnerButton
-              buttonStyle={[
-                styles.buttonStyle,
-                {
-                  backgroundColor: "#0d47a1",
-                  borderRadius: 50,
-                  width: 200
-                }
-              ]}
-              isLoading={this.state.dotLoading}
-              spinnerType="DotIndicator"
-              // onPress={this.signIn}
-            >
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  alignItems: "center"
-                }}
-              >
-                <Fa5 name={"sign-in-alt"} size={30} color="#fff" />
-                <Text style={{ color: "white", paddingHorizontal: 10 }}>
-                  Phone SignIn
-                </Text>
-              </View>
-            </SpinnerButton>
+
+            <Button1
+              buttonStyle={styles.LoginButton}
+              icon={<Fa5 name="sign-in-alt" size={20} color="white" />}
+              iconLeft
+              title="Login with Google"
+              titleStyle={{ paddingLeft: 10 }}
+              onPress={this.googleLogin}
+              //disabled={this.state.validPhone && this.state.validSname ? false : true}
+              // loading={this.state.otpLoading}
+            />
           </View>
         </View>
       </SafeAreaView>
     );
   }
 }
+
+const mapDispathToProps = dispatch => {
+  return {
+    userLoginDetails: data => dispatch(loginDetails(data))
+  };
+};
+
+export default connect(
+  null,
+  mapDispathToProps
+)(GoogleLogin);
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#e3f2fd" },
@@ -278,5 +299,12 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     margin: 20,
     width: 200
+  },
+  LoginButton: {
+    // backgroundColor: "#0d47a1",
+    borderRadius: 50,
+    padding: 10,
+    height: 50,
+    width: 250
   }
 });

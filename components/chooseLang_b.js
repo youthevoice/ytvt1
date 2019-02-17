@@ -26,15 +26,10 @@ import GS from "./gLogin";
 import FbLogin from "./fbLogin";
 import Tshare1 from "./aShare";
 import Ph from "./phLogin";
-
+import { Divider } from "react-native-elements";
 import { connect } from "react-redux";
-import { userLogout, loginDetails } from "./store/actions";
-import {
-  ListItem,
-  Card,
-  Button as Button1,
-  Divider
-} from "react-native-elements";
+import { logout } from "./store/actions";
+import { ListItem, Card } from "react-native-elements";
 
 class UserDetails extends Component {
   constructor(props) {
@@ -74,12 +69,6 @@ class UserDetails extends Component {
     }
   };
 
-  _userLogin = () => {
-    this.props.navigation.navigate("YtvLogin", {
-      screenName: "AllArticles"
-    });
-  };
-
   render() {
     const { navigation } = this.props;
     const articleID = navigation.getParam("articleID", "");
@@ -95,7 +84,7 @@ class UserDetails extends Component {
             </View>
           </TouchableOpacity>
           <View>
-            <Text style={styles.h1w}>User Info</Text>
+            <Text style={styles.h1w}>Choose Language</Text>
           </View>
         </View>
 
@@ -120,16 +109,14 @@ class UserDetails extends Component {
 
               <Text
                 style={{
-                  fontSize: 15,
+                  fontSize: 20,
                   color: this.state.english ? "green" : "black"
                 }}
               >
                 English
               </Text>
             </TouchableOpacity>
-            <Divider
-              style={{ backgroundColor: "#CFD8DC", paddingHorizontal: 10 }}
-            />
+            <Divider style={{ backgroundColor: "blue" }} />
             <TouchableOpacity
               style={styles.qoption}
               onPress={this.chooseLang("telugu")}
@@ -147,79 +134,128 @@ class UserDetails extends Component {
 
               <Text
                 style={{
-                  fontSize: 15,
+                  fontSize: 20,
                   color: this.state.telugu ? "green" : "black"
                 }}
               >
-                Telugu -- This will be avaliable soon
+                Telugu
               </Text>
             </TouchableOpacity>
           </View>
         </View>
-        {this.props.isAuthenticated && (
-          <Card title="User Details">
-            <View style={{ padding: 10 }}>
-              <Text>Name </Text>
-              <Text>{this.props.sName}</Text>
-            </View>
 
-            <View style={{ padding: 10 }}>
-              <Text>Login Method </Text>
-              <Text>{this.props.authMethod}</Text>
-            </View>
+        <View style={styles.card}>
+          <Text style={styles.cardHeader}>User Details</Text>
 
-            <View style={{ padding: 10 }}>
-              <Text>UserId </Text>
-              <Text>{this.props.userId}</Text>
+          <View style={{ padding: 10 }}>
+            <View style={styles.userDetails}>
+              <Text
+                style={{
+                  fontSize: 18,
+                  color: "black"
+                }}
+              >
+                LoggedIn:
+              </Text>
+              <Text
+                style={{
+                  fontSize: 18,
+                  color: "black"
+                }}
+              >
+                {this.props.isLoggedIn}
+              </Text>
             </View>
-            <View style={{ alignItems: "center", justifyContent: "center" }}>
-              <Button1
-                buttonStyle={styles.LoginButtonUpload}
-                type="outline"
-                icon={
-                  <Fa5
-                    name="sign-out-alt"
-                    size={15}
-                    //color="white"
-                    style={{ paddingRight: 5 }}
-                  />
-                }
-                iconLeft
-                title="Logout"
-                onPress={this.props.userLogout}
-                //disabled={!this.state.uploadButton}
-              />
-            </View>
-          </Card>
-        )}
-        {!this.props.isAuthenticated && (
-          <Card title="User Details">
-            <View
-              style={{
-                padding: 10,
-                alignItems: "center",
-                justifyContent: "center"
-              }}
+            <Divider style={{ backgroundColor: "blue" }} />
+            <TouchableOpacity
+              style={styles.qoption}
+              // onPress={this.setOptionsColor(1, 1)}
             >
-              <Button1
-                buttonStyle={styles.LoginButtonUpload}
-                type="outline"
-                icon={
-                  <Fa5
-                    name="sign-out-alt"
-                    size={15}
-                    //color="white"
-                    style={{ paddingRight: 5 }}
-                  />
-                }
-                iconLeft
-                title="Login"
-                onPress={this._userLogin}
-                //disabled={!this.state.uploadButton}
-              />
+              <Text> Login Method </Text>
+
+              <Text
+                style={{
+                  fontSize: 20,
+                  color: this.state.quiz1option1 ? "green" : "black"
+                }}
+              >
+                Google
+              </Text>
+            </TouchableOpacity>
+            <View>
+              <Text
+                style={{
+                  fontSize: 20,
+                  color: "black"
+                }}
+              >
+                UsetId
+              </Text>
+
+              <Text
+                style={{
+                  fontSize: 20,
+                  color: "black"
+                }}
+              >
+                ew1dotcom@gmal.com
+              </Text>
             </View>
-          </Card>
-        )}
+            <TouchableOpacity
+              style={styles.qoption}
+              // onPress={this.setOptionsColor(1, 1)}
+            >
+              <Text
+                style={{
+                  fontSize: 20,
+                  color: "black"
+                }}
+              >
+                LoggedIN Time
+              </Text>
+
+              <Text
+                style={{
+                  fontSize: 20,
+                  color: "black"
+                }}
+              >
+                12-FEB-2019 12:23
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.qoption}
+              // onPress={this.setOptionsColor(1, 1)}
+            >
+              <SpinnerButton
+                buttonStyle={[
+                  styles.buttonStyle,
+                  {
+                    backgroundColor: "#0d47a1",
+                    borderRadius: 50,
+                    width: 200
+                  }
+                ]}
+                isLoading={this.state.dotLoading}
+                spinnerType="DotIndicator"
+                onPress={this.props.userLogout}
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignItems: "center"
+                  }}
+                >
+                  <Fa5 name={"sign-out-alt"} size={30} color="#fff" />
+                  <Text style={{ color: "white", paddingHorizontal: 10 }}>
+                    Logout
+                  </Text>
+                </View>
+              </SpinnerButton>
+            </TouchableOpacity>
+          </View>
+        </View>
       </SafeAreaView>
     );
   }
@@ -227,18 +263,17 @@ class UserDetails extends Component {
 
 const mapStateToProps = state => {
   return {
+    isLoggedIn: state.isLoggedIn,
     authMethod: state.authMethod,
     userId: state.userId,
     sName: state.sName,
-    isAuthenticated: state.isAuthenticated,
-    language: state.language
+    isAuthenticated: state.isAuthenticated
   };
 };
 
 const mapDispathToProps = dispatch => {
   return {
-    userLogout: () => dispatch(userLogout()),
-    userLoginDetails: data => dispatch(loginDetails(data))
+    userLogout: () => dispatch(logout())
   };
 };
 
@@ -253,13 +288,6 @@ const styles = StyleSheet.create({
     padding: 10,
     fontSize: 20,
     fontWeight: "bold"
-  },
-  LoginButtonUpload: {
-    //backgroundColor: "#FF9800",
-    borderRadius: 50,
-    margin: 10,
-    height: 40,
-    width: 150
   },
   qoption: {
     flexDirection: "row",
@@ -289,8 +317,9 @@ const styles = StyleSheet.create({
     fontSize: 18,
 
     paddingHorizontal: 15,
-    paddingVertical: 10,
-    color: "#bf360c"
+    paddingVertical: 30,
+    color: "#bf360c",
+    fontWeight: "bold"
   },
   cardImage: {
     width: null,
@@ -332,10 +361,11 @@ const styles = StyleSheet.create({
     letterSpacing: 2
   },
   h1w: {
-    fontSize: 18,
-
+    fontSize: 20,
+    fontWeight: "bold",
     color: "#fff",
-    paddingLeft: 5
+    paddingLeft: 5,
+    letterSpacing: 2
   },
   bottomBarItem: {
     alignItems: "center",

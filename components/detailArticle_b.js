@@ -47,7 +47,7 @@ class DetailArticle extends Component {
       isLoggedIn: false,
       // isAuthenticated: false,
       upVote: false,
-      dwVote: false,
+      dVote: false,
       upVoteColor: "#9e9e9e",
       dwVoteColor: "#9e9e9e",
       loadL: false,
@@ -63,50 +63,51 @@ class DetailArticle extends Component {
   }
 
   async componentDidMount() {
-    this.setState({
-      articleId: this.props.navigation.getParam("articleId", "")
-    });
-    this._getUserArticleLike();
+    this._getArticle();
   }
 
   _getUserArticleLike = () => {
-    // this.setState({ loadL: true });
-    console.log("I am in compo");
-
-    axios.all([this._getArticle(), this._getUserLike()]).then(
-      axios.spread((articles, likes) => {
-        // console.log("likessssss", likes.dwVote, likes.data.dwVote);
-
+    axios
+      .get("https://youthevoice.com/getarticles", {
+        params: {
+          articleId: this.props.navigation.getParam("articleId", "")
+        }
+      })
+      .then(res => {
+        console.log(res.data);
         this.setState({
           loadL: false,
-          articleData: articles.data,
-          renderI: true,
-          dwVote: likes.data.dwVote,
-          upVote: likes.data.upVote
+          articleData: res.data,
+          renderI: true
         });
       })
-    );
+      .catch(error => {
+        this.setState({ error, loadL: false });
+      });
   };
 
   _getArticle = () => {
     /* 1. Navigate to the Details route with params */
 
-    // this.setState({ loadL: true });
+    this.setState({ loadL: true });
 
-    return axios.get("https://youthevoice.com/getarticles", {
-      params: {
-        articleId: this.props.navigation.getParam("articleId", "")
-      }
-    });
-  };
-
-  _getUserLike = () => {
-    return axios.get("https://youthevoice.com/getuserlike", {
-      params: {
-        articleId: this.props.navigation.getParam("articleId", ""),
-        userId: this.props.userId
-      }
-    });
+    axios
+      .get("https://youthevoice.com/getarticles", {
+        params: {
+          articleId: this.props.navigation.getParam("articleId", "")
+        }
+      })
+      .then(res => {
+        console.log(res.data);
+        this.setState({
+          loadL: false,
+          articleData: res.data,
+          renderI: true
+        });
+      })
+      .catch(error => {
+        this.setState({ error, loadL: false });
+      });
   };
 
   _keyExtractor = (item, index) => item.id;
@@ -763,14 +764,7 @@ class DetailArticle extends Component {
                     padding: 10
                   }}
                 >
-                  <TouchableOpacity
-                    onPress={() =>
-                      this.props.navigation.navigate("YtvVoice", {
-                        articleId: this.state.articleId,
-                        screenName: "DetailArticle"
-                      })
-                    }
-                  >
+                  <TouchableOpacity onPress={this.recordVideo}>
                     <View style={styles.bottomBarItem}>
                       <Icon name="md-megaphone" size={30} />
                       <Text style={{ paddingVertical: 5 }}> YTV VOICE</Text>

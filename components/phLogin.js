@@ -60,14 +60,15 @@ class PhoneLogin extends Component {
       verifyCode: "",
       codeSent: false,
       otpLoading: false,
-      msgColor: "black"
+      msgColor: "black",
+      validCode: false
     };
   }
 
   componentDidMount() {
     this.setState({
-      //screenName: this.props.navigation.getParam("screenName", ""),
-      //articleId: this.props.navigation.getParam("articleId", "")
+      screenName: this.props.navigation.getParam("screenName", ""),
+      articleId: this.props.navigation.getParam("articleId", "")
     });
   }
 
@@ -112,9 +113,22 @@ class PhoneLogin extends Component {
             sName: this.state.sname
           };
           this.props.userLoginDetails(acData);
-          this.props.navigation.navigate("DetailArticle", {
-            articleId: this.state.articleId
-          });
+          if (
+            this.state.screenName == "DetailArticle" &&
+            this.state.articleId != null &&
+            this.state.articleId != ""
+          ) {
+            this.props.navigation.navigate("DetailArticle", {
+              articleId: this.state.articleId
+            });
+          } else if (
+            this.state.screenName != null &&
+            this.state.screenName != ""
+          ) {
+            this.props.navigation.navigate(this.state.screenName);
+          } else {
+            this.props.navigation.navigate("AllArticles");
+          }
         })
         .catch(error => {
           console.log(error);
@@ -232,9 +246,22 @@ class PhoneLogin extends Component {
                 sName: this.state.sname
               };
               this.props.userLoginDetails(acData);
-              this.props.navigation.navigate("DetailArticle", {
-                articleId: this.state.articleId
-              });
+              if (
+                this.state.screenName == "DetailArticle" &&
+                this.state.articleId != null &&
+                this.state.articleId != ""
+              ) {
+                this.props.navigation.navigate("DetailArticle", {
+                  articleId: this.state.articleId
+                });
+              } else if (
+                this.state.screenName != null &&
+                this.state.screenName != ""
+              ) {
+                this.props.navigation.navigate(this.state.screenName);
+              } else {
+                this.props.navigation.navigate("AllArticles");
+              }
 
               // Example usage if handling here and not in optionalCompleteCb:
               // const { verificationId, code } = phoneAuthSnapshot;
@@ -324,10 +351,24 @@ class PhoneLogin extends Component {
     console.log(sname);
   };
 
+  validateCode = vcode => {
+    if (/\S/.test(vcode)) {
+      this.setState({ validCode: true, verifyCode: vcode });
+      console.log("matched");
+    } else {
+      this.setState({ validCode: false });
+      console.log("not  matched");
+    }
+
+    console.log(sname);
+  };
+
   render() {
     const { userVerified, codeValidation, codeSent } = this.state;
     const { navigation } = this.props;
     const articleID = navigation.getParam("articleID", "");
+
+    this.props.navigation.getParam("articleID", "");
 
     // alert(articleID);
 
@@ -385,6 +426,7 @@ class PhoneLogin extends Component {
 
               <Button1
                 buttonStyle={styles.LoginButton}
+                type="outline"
                 icon={<Fa5 name="sign-in-alt" size={25} color="white" />}
                 iconLeft
                 title=" SEND OTP"
@@ -403,18 +445,31 @@ class PhoneLogin extends Component {
                 id="veriftcode"
                 containerStyle={{ paddingHorizontal: 20, paddingVertical: 30 }}
                 placeholder="Enter verification code"
-                leftIcon={<Fa5 name="blender-phone" size={24} color="green" />}
-                onChangeText={value => this.setState({ verifyCode: value })}
-                value={this.state.verifyCode}
+                leftIcon={
+                  <Fa5
+                    name="blender-phone"
+                    size={24}
+                    color={this.state.validCode ? "green" : "red"}
+                  />
+                }
+                onChangeText={vcode => this.validateCode(vcode)}
+                //value={this.state.verifyCode}
               />
 
               <Button1
                 buttonStyle={styles.LoginButton}
-                icon={<Fa5 name="sign-in-alt" size={15} color="white" />}
+                icon={
+                  <Fa5
+                    name="sign-in-alt"
+                    size={15}
+                    color={this.state.validCode ? "green" : "red"}
+                  />
+                }
                 iconLeft
                 title=" ENTER OTP"
                 onPress={this.verifyCode}
                 loading={this.state.otpLoading}
+                disabled={this.state.otpLoading || !this.state.validCode}
               />
             </View>
           )}

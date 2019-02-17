@@ -2,7 +2,13 @@ import React, { Component } from "react";
 import { View, Button } from "react-native";
 import { LoginButton, AccessToken, LoginManager } from "react-native-fbsdk";
 
-export default class FbLogin extends Component {
+import Snackbar from "react-native-snackbar";
+import { connect } from "react-redux";
+import { loginDetails } from "./store/actions";
+
+import { Input, Button as Button1 } from "react-native-elements";
+
+class FbLogin extends Component {
   loginFacebook = () => {
     LoginManager.logInWithReadPermissions(["public_profile"]).then(
       function(result) {

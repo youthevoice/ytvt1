@@ -1,4 +1,3 @@
-import { AccessToken, LoginManager } from "react-native-fbsdk";
 import React, { Component } from "react";
 
 import {
@@ -31,110 +30,141 @@ import Icon from "react-native-vector-icons/Ionicons";
 
 import { RectButton, BorderlessButton } from "react-native-gesture-handler";
 
+import { GoogleSignin, statusCodes } from "react-native-google-signin";
 import firebase from "react-native-firebase";
 import Loader from "./loader";
+import SpinnerButton from "react-native-spinner-button";
 
 import Snackbar from "react-native-snackbar";
 import { connect } from "react-redux";
 import { loginDetails } from "./store/actions";
 
-class FBLogin extends Component {
+class GoogleLogin extends Component {
   constructor(props) {
     super(props);
     this.state = {
       userInfo: null,
-      error: null
+      error: false,
+      errorMsg: null,
+      loadL: false,
+      dotLoading: false
     };
   }
 
-  ffacebookLogin = async () => {
-    let result;
+  async componentDidMount() {
+    // this.googleLogin();
+  }
+
+  _onPress = articleId => () => {
+    /* 1. Navigate to the Details route with params */
+
+    this.setState({ loadL: true });
+
+    axios
+      .get("https://youthevoice.com/getarticles", {
+        params: {
+          articleId: articleId
+        }
+      })
+      .then(res => {
+        console.log(res.data);
+        this.setState({
+          loadL: false,
+          dotLoading: false
+        });
+        this.props.navigation.navigate("DetailArticle", {
+          datailData: res.data
+        });
+      })
+      .catch(error => {
+        this.setState({ error, loadL: false });
+      });
+  };
+
+  googleLogin = async () => {
+    this.setState({ loadL: true, dotLoading: true });
     try {
+      // add any configuration settings here:
+      await GoogleSignin.configure();
+      var data;
       try {
-        this.setState({ showLoadingModal: true });
-        LoginManager.setLoginBehavior("NATIVE_ONLY");
-        result = await LoginManager.logInWithReadPermissions([
-          "public_profile",
-          "email"
-        ]);
-      } catch (nativeError) {
-        try {
-          LoginManager.setLoginBehavior("WEB_ONLY");
-          result = await LoginManager.logInWithReadPermissions([
-            "public_profile",
-            "email"
-          ]);
-        } catch (webError) {
-          // show error message to the user if none of the FB screens
-          // did not open
+        data = await GoogleSignin.signIn();
+        console.log("data....", data);
+        var acData = {
+          isAuthenticated: true,
+          authMethod: "Google Login",
+          userId: data.user.email,
+          sName: data.user.givenName
+        };
+        this.props.userLoginDetails(acData);
+
+        if (
+          this.state.screenName == "DetailArticle" &&
+          this.state.articleId != null &&
+          this.state.articleId != ""
+        ) {
+          this.props.navigation.navigate("DetailArticle", {
+            articleId: this.state.articleId
+          });
+        } else if (
+          this.state.screenName != null &&
+          this.state.screenName != ""
+        ) {
+          this.props.navigation.navigate(this.state.screenName);
+        } else {
+          this.props.navigation.navigate("AllArticles");
+        }
+      } catch (error) {
+        this.setState({ loadL: false, dotLoading: false, error: true });
+        if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+          // sign in was cancelled
+          Alert.alert("cancelled");
+        } else if (error.code === statusCodes.IN_PROGRESS) {
+          // operation in progress already
+          Alert.alert("in progress");
+        } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+          Alert.alert("play services not available or outdated");
+        } else {
+          Alert.alert("Something went wrong", error.toString());
+          this.setState({
+            error
+          });
         }
       }
 
-      if (result.isCancelled) {
-        // handle this however suites the flow of your app
-        throw new Error("User cancelled request");
-      }
-
-      console.log(
-        `Login success with permissions: ${result.grantedPermissions.toString()}`
-      );
-
-      // get the access token
-      const data = await AccessToken.getCurrentAccessToken();
-
-      if (!data) {
-        // handle this however suites the flow of your app
-        throw new Error(
-          "Something went wrong obtaining the users access token"
+      if (!this.state.error) {
+        // create a new firebase credential with the token
+        const credential = firebase.auth.GoogleAuthProvider.credential(
+          data.idToken,
+          data.accessToken
         );
+        // login with credential
+        const firebaseUserCredential = await firebase
+          .auth()
+          .signInWithCredential(credential);
+
+        console.log(JSON.stringify(firebaseUserCredential.user.toJSON()));
+        try {
+          await AsyncStorage.setItem("isLoggedIn", "yes");
+          await AsyncStorage.setItem(
+            "sName",
+            firebaseUserCredential.user.toJSON().displayName
+          );
+          await AsyncStorage.setItem("authMethod", "google");
+          await AsyncStorage.setItem(
+            "userId",
+            firebaseUserCredential.user.toJSON().email
+          );
+        } catch (error) {
+          console.log(error);
+        }
+        this._onPress("a2b3a780-eaed-4cbf-b373-38a46ce20455")();
       }
-      console.log("Dattaaa Face", data);
-      // create a new firebase credential with the token
-      const credential = firebase.auth.FacebookAuthProvider.credential(
-        data.accessToken
-      );
-
-      // login with credential
-      const firebaseUserCredential = await firebase
-        .auth()
-        .signInWithCredential(credential);
-
-      var FbData = firebaseUserCredential.user.toJSON();
-
-      console.log("FB Data.......llll", FbData.email, FbData.displayName);
-
-      var acData = {
-        isAuthenticated: true,
-        authMethod: "Facrbook Login",
-        userId: FbData.email,
-        sName: FbData.displayName
-      };
-
-      this.props.userLoginDetails(acData);
-
-      if (
-        this.state.screenName == "DetailArticle" &&
-        this.state.articleId != null &&
-        this.state.articleId != ""
-      ) {
-        this.props.navigation.navigate("DetailArticle", {
-          articleId: this.state.articleId
-        });
-      } else if (this.state.screenName != null && this.state.screenName != "") {
-        this.props.navigation.navigate(this.state.screenName);
-      } else {
-        this.props.navigation.navigate("AllArticles");
-      }
-
-      console.log(
-        "FaceBookk  Firebaseee",
-        JSON.stringify(firebaseUserCredential.user.toJSON())
-      );
     } catch (e) {
+      this.setState({ loadL: false, dotLoading: false });
       console.error(e);
     }
   };
-
   render() {
     const { navigation } = this.props;
     const articleID = navigation.getParam("articleID", "");
@@ -167,9 +197,9 @@ class FBLogin extends Component {
               buttonStyle={styles.LoginButton}
               icon={<Fa5 name="sign-in-alt" size={20} color="white" />}
               iconLeft
-              title="Login with FaceBook"
+              title="Login with Google"
               titleStyle={{ paddingLeft: 10 }}
-              onPress={this.ffacebookLogin}
+              onPress={this.googleLogin}
               //disabled={this.state.validPhone && this.state.validSname ? false : true}
               // loading={this.state.otpLoading}
             />
@@ -189,9 +219,7 @@ const mapDispathToProps = dispatch => {
 export default connect(
   null,
   mapDispathToProps
-)(FBLogin);
-
-// Calling the following function will open the FB login dialogue:
+)(GoogleLogin);
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#e3f2fd" },

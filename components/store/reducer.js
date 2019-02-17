@@ -2,10 +2,10 @@ import * as actionCreator from "./actions";
 
 const initialState = {
   isAuthenticated: false,
-  isLoggedIn: "",
   authMethod: "",
   userId: "",
-  sName: ""
+  sName: "",
+  language: ""
 };
 
 export default function reducer(state = initialState, action) {
@@ -17,7 +17,8 @@ export default function reducer(state = initialState, action) {
         isAuthenticated: false,
         authMethod: null,
         userId: null,
-        sName: null
+        sName: null,
+        language: null
       };
     case actionCreator.LOGIN:
       console.log("i am in login...");

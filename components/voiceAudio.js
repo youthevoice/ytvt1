@@ -306,11 +306,12 @@ class VoiceAudio extends Component {
           <View style={{ alignItems: "center", justifyContent: "center" }}>
             <Button1
               buttonStyle={styles.LoginButton}
+              type="outline"
               icon={
                 <Fa5
                   name="microphone-alt"
                   size={25}
-                  color="white"
+                  // color="white"
                   style={{ paddingRight: 5 }}
                 />
               }
@@ -324,11 +325,12 @@ class VoiceAudio extends Component {
             </Text>
             <Button1
               buttonStyle={styles.LoginButton}
+              type="outline"
               icon={
                 <Fa5
                   name="microphone-alt-slash"
                   size={15}
-                  color="white"
+                  // color="white"
                   style={{ paddingRight: 5 }}
                 />
               }
@@ -340,11 +342,12 @@ class VoiceAudio extends Component {
             />
             <Button1
               buttonStyle={styles.LoginButtonPlay}
+              type="outline"
               icon={
                 <Fa5
                   name="play"
                   size={15}
-                  color="white"
+                  //  color="white"
                   style={{ paddingRight: 5 }}
                 />
               }
@@ -366,11 +369,12 @@ class VoiceAudio extends Component {
             {!this.state.isUploading ? (
               <Button1
                 buttonStyle={styles.LoginButtonUpload}
+                type="outline"
                 icon={
                   <Fa5
                     name="cloud-upload-alt"
                     size={15}
-                    color="white"
+                    //  color="white"
                     style={{ paddingRight: 5 }}
                   />
                 }
@@ -440,8 +444,8 @@ var styles = StyleSheet.create({
   progressText: {
     paddingTop: 5,
     paddingBottom: 10,
-    fontSize: 20,
-    color: "#000"
+    fontSize: 20
+    // color: "#000"
   },
   button: {
     padding: 20
@@ -458,21 +462,21 @@ var styles = StyleSheet.create({
     color: "#B81F00"
   },
   LoginButton: {
-    backgroundColor: "#4CAF50",
+    // backgroundColor: "#4CAF50",
     borderRadius: 50,
     margin: 10,
     height: 50,
     width: 200
   },
   LoginButtonPlay: {
-    backgroundColor: "#9E9E9E",
+    // backgroundColor: "#9E9E9E",
     borderRadius: 50,
     margin: 10,
     height: 50,
     width: 200
   },
   LoginButtonUpload: {
-    backgroundColor: "#FF9800",
+    // backgroundColor: "#FF9800",
     borderRadius: 50,
     margin: 10,
     height: 50,
@@ -492,7 +496,7 @@ var styles = StyleSheet.create({
     fontSize: 20,
     textAlign: "center"
   },
-  container: { flex: 1, backgroundColor: "#e3f2fd" },
+  container: { flex: 1, backgroundColor: "#fff" },
   question: {
     padding: 10,
     fontSize: 20,

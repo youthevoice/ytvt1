@@ -57,7 +57,11 @@ class VoiceImage extends React.Component {
   componentDidMount() {
     const dirs = RNFetchBlob.fs.dirs;
     //  console.log("dcimmmm", dirs);
-    this.setState({ PictureDir: dirs.PictureDir });
+    this.setState({
+      PictureDir: dirs.PictureDir,
+      articleId: this.props.navigation.getParam("articleId", ""),
+      screenName: this.props.navigation.getParam("screenName", "")
+    });
   }
 
   selectPhotoTapped = () => {
@@ -233,6 +237,27 @@ class VoiceImage extends React.Component {
                 uploadStatus: 100,
                 isUploading: false
               });
+              console.log(
+                "dsasdasDas",
+                this.state.screenName,
+                this.state.articleId
+              );
+              if (
+                this.state.screenName == "DetailArticle" &&
+                this.state.articleId != null &&
+                this.state.articleId != ""
+              ) {
+                this.props.navigation.navigate("DetailArticle", {
+                  articleId: this.state.articleId
+                });
+              } else if (
+                this.state.screenName != null &&
+                this.state.screenName != ""
+              ) {
+                this.props.navigation.navigate(this.state.screenName);
+              } else {
+                this.props.navigation.navigate("AllArticles");
+              }
             })
             .catch(err => {
               console.log("task erroroooooo", err);
@@ -348,7 +373,9 @@ class VoiceImage extends React.Component {
         <StatusBar barStyle="dark-content" backgroundColor="#bf360c" />
 
         <View style={styles.headerBar}>
-          <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+          <TouchableOpacity
+            onPress={() => this.props.navigation.navigate("YtvVoice")}
+          >
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               <Icon name="ios-arrow-round-back" color="#fff" size={30} />
               <Text style={styles.logo}>Back...</Text>
@@ -377,16 +404,17 @@ class VoiceImage extends React.Component {
             {!this.state.isUploading ? (
               <Button1
                 buttonStyle={styles.LoginButtonUpload}
+                type="outline"
                 icon={
                   <Fa5
                     name="cloud-upload-alt"
                     size={15}
-                    color="white"
-                    style={{ paddingRight: 5 }}
+                    // color="white"
                   />
                 }
                 iconLeft
                 title="Send Your Voice & Images"
+                titleStyle={{ paddingLeft: 10 }}
                 onPress={this._submitTextAudio(articleId, screenName)}
                 disabled={!this.state.uploadButton}
               />
@@ -437,13 +465,14 @@ class VoiceImage extends React.Component {
               icon={
                 <Fa5
                   name="images"
-                  size={25}
+                  size={15}
                   //color="white"
                   style={{ paddingRight: 5 }}
                 />
               }
               iconLeft
               title="Select/Take Photo"
+              titleStyle={{ paddingLeft: 10 }}
               onPress={this.selectPhotoTapped}
               disabled={this.state.isUploading}
             />
@@ -574,7 +603,7 @@ var styles = StyleSheet.create({
     width: 200
   },
   LoginButtonUpload: {
-    backgroundColor: "#FF9800",
+    // backgroundColor: "#FF9800",
     borderRadius: 50,
     margin: 10,
     height: 50,

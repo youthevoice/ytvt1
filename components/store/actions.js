@@ -28,15 +28,34 @@ export const fetchLoginDetails = () => {
       authMethod = await AsyncStorage.getItem("authMethod");
       userId = await AsyncStorage.getItem("userId");
       sname = await AsyncStorage.getItem("sName");
+      language = await AsyncStorage.getItem("language");
       var acData = {
         isAuthenticated: isAuthenticated,
         authMethod: authMethod,
         userId: userId,
-        sName: sname
+        sName: sname,
+        language: language
       };
       dispatch(login(acData));
     } catch (error) {
       console.log("Error getting  Data from async");
+    }
+  };
+};
+
+export const userLogout = data => {
+  return async dispatch => {
+    dispatch(logout());
+
+    //console.log(data);
+
+    try {
+      await AsyncStorage.removeItem("isAuthenticated");
+      await AsyncStorage.removeItem("authMethod");
+      await AsyncStorage.removeItem("userId");
+      await AsyncStorage.removeItem("sName");
+    } catch (error) {
+      console.log("Error Saving Data");
     }
   };
 };
@@ -54,7 +73,7 @@ export const loginDetails = data => {
       );
       await AsyncStorage.setItem("authMethod", data.authMethod);
       await AsyncStorage.setItem("userId", data.userId);
-      await AsyncStorage.setItem("sName", data.sname);
+      await AsyncStorage.setItem("sName", data.sName);
     } catch (error) {
       console.log("Error Saving Data");
     }
