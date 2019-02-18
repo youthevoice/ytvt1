@@ -398,11 +398,7 @@ class Articles extends React.Component {
       <TouchableOpacity onPress={() => this._onPress(item.articleId)}>
         <Text style={styles.cardHeader}>{item.articleHeading}</Text>
         <Image source={{ uri: item.articleImage }} style={styles.cardImage} />
-        <Text style={styles.cardText}>
-          One would think that years after Ajmal Kasab and his murderous coterie
-          of Lashkar-e-Taiba terrorists exploited the vulnerability of India’s
-          maritime security, our coasts would be almost impenetrable.
-        </Text>
+        <Text style={styles.cardText}>{item.articleShortDesc}</Text>
       </TouchableOpacity>
       <View
         style={{
@@ -412,20 +408,28 @@ class Articles extends React.Component {
         }}
       >
         <TouchableOpacity
+          style={styles.bottomBarItem}
           onPress={() =>
             this.props.navigation.navigate("YtvShare", {
               datailData: item.articlePk
             })
           }
         >
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center"
+            }}
+          >
             <Icon name="md-share-alt" size={30} color="#388e3c" />
-            <Text style={{ padding: 10, color: "#388e3c" }}>Share</Text>
+            <Text style={{ padding: 5, color: "#388e3c" }}>Share</Text>
           </View>
-          <Text style={{ paddingVertical: 5 }}> 20k Shares</Text>
+          <Text style={styles.bottomBarTitle}> {item.no_of_shares}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
+          style={styles.bottomBarItem}
           onPress={() =>
             this.props.navigation.navigate("YtvVoice", {
               articleId: item.articleId,
@@ -435,11 +439,9 @@ class Articles extends React.Component {
         >
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <Icon name="md-chatboxes" size={30} color="#388e3c" />
-            <Text style={{ padding: 10, color: "#388e3c" }}>
-              Add Your Voice
-            </Text>
+            <Text style={{ padding: 5, color: "#388e3c" }}>Add Your Voice</Text>
           </View>
-          <Text style={{ paddingVertical: 5 }}> 20k Voices Heard</Text>
+          <Text style={{ paddingVertical: 5 }}> {item.no_of_comments}</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -464,16 +466,18 @@ class Articles extends React.Component {
             </View>
           </View>
           <Loader loading={this.state.loadL} />
-          <FlatList
-            keyExtractor={(item, index) => item.articleId}
-            data={this.state.data}
-            renderItem={this.renderItem}
-            ListFooterComponent={this.renderFooter}
-            refreshing={this.state.refreshing}
-            // onRefresh={this.handleRefresh}
-            onEndReachedThreshold={0.1}
-            onEndReached={this.loadMore}
-          />
+          <View style={{ borderTopLeftRadius: 7.5 }}>
+            <FlatList
+              keyExtractor={(item, index) => item.articleId}
+              data={this.state.data}
+              renderItem={this.renderItem}
+              ListFooterComponent={this.renderFooter}
+              refreshing={this.state.refreshing}
+              // onRefresh={this.handleRefresh}
+              onEndReachedThreshold={0.1}
+              onEndReached={this.loadMore}
+            />
+          </View>
         </View>
 
         <View style={styles.bottomBar}>

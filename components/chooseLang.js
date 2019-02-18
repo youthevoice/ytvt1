@@ -279,7 +279,9 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: "#ffffff",
     elevation: 3,
-    marginVertical: 2
+    marginVertical: 2,
+    borderTopLeftRadius: 7.5,
+    borderTopRightRadius: 7.5
   },
   cardseparator: {
     borderBottomColor: "#d1d0d4",

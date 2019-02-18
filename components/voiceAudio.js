@@ -41,7 +41,8 @@ class VoiceAudio extends Component {
     fileName: this.props.userId + "youthevoicedotcom.mp4",
     onlyFileName: this.props.userId + "youthevoicedotcom",
     uploadStatus: 0,
-    commentText: ""
+    commentText: "",
+    recorded: false
   };
 
   prepareRecordingPath(audioPath) {
@@ -133,6 +134,7 @@ class VoiceAudio extends Component {
 
     try {
       const filePath = await AudioRecorder.startRecording();
+      this.setState({ recorded: true });
     } catch (error) {
       console.error(error);
     }
@@ -310,7 +312,7 @@ class VoiceAudio extends Component {
               icon={
                 <Fa5
                   name="microphone-alt"
-                  size={25}
+                  size={15}
                   // color="white"
                   style={{ paddingRight: 5 }}
                 />
@@ -319,6 +321,8 @@ class VoiceAudio extends Component {
               title=" Start Recording"
               onPress={this._record}
               loading={this.state.recording}
+              loadingProps={{ color: "#BF360C", size: "large" }}
+              disabled={this.state.recording || this.state.isUploading}
             />
             <Text style={styles.progressText}>
               Time Recorded: {this.SecondsTohhmmss(this.state.currentTime)}
@@ -354,7 +358,11 @@ class VoiceAudio extends Component {
               iconLeft
               title="Play Recorded Voice"
               onPress={this._playSound}
-              disabled={this.state.recording}
+              disabled={
+                this.state.recording ||
+                !this.state.recorded ||
+                this.state.isUploading
+              }
             />
             <Input
               id="phonenumber"
@@ -381,7 +389,7 @@ class VoiceAudio extends Component {
                 iconLeft
                 title="Upload Your Voice"
                 onPress={this._submitTextAudio(articleId, screenName)}
-                disabled={this.state.recording}
+                disabled={this.state.recording || !this.state.recorded}
               />
             ) : (
               <View

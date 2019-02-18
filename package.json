@@ -29,6 +29,7 @@
     "react-native-image-pan-zoom": "^2.1.11",
     "react-native-image-picker": "^0.28.0",
     "react-native-linear-gradient": "^2.5.3",
+    "react-native-masonry-list": "^2.7.2",
     "react-native-material-textfield": "^0.12.0",
     "react-native-micro-animated-button": "0.0.28",
     "react-native-modal": "^7.0.2",

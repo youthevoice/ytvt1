@@ -51,6 +51,7 @@ import { createStore, applyMiddleware } from "redux";
 import thunk from "redux-thunk";
 import { Provider } from "react-redux";
 import reducer from "./store/reducer";
+import ImageGrid from "./imageGrid";
 
 import TSound1 from "./soundT1";
 
@@ -137,6 +138,12 @@ const Articles = createStackNavigator(
     },
     PlaySound: {
       screen: PlaySound
+    },
+    ImageGrid: {
+      screen: ImageGrid
+    },
+    CheckImages: {
+      screen: CheckImages
     }
   },
   {

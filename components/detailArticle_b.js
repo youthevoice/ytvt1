@@ -47,7 +47,7 @@ class DetailArticle extends Component {
       isLoggedIn: false,
       // isAuthenticated: false,
       upVote: false,
-      dVote: false,
+      dwVote: false,
       upVoteColor: "#9e9e9e",
       dwVoteColor: "#9e9e9e",
       loadL: false,
@@ -63,51 +63,50 @@ class DetailArticle extends Component {
   }
 
   async componentDidMount() {
-    this._getArticle();
+    this.setState({
+      articleId: this.props.navigation.getParam("articleId", "")
+    });
+    this._getUserArticleLike();
   }
 
   _getUserArticleLike = () => {
-    axios
-      .get("https://youthevoice.com/getarticles", {
-        params: {
-          articleId: this.props.navigation.getParam("articleId", "")
-        }
-      })
-      .then(res => {
-        console.log(res.data);
+    // this.setState({ loadL: true });
+    console.log("I am in compo");
+
+    axios.all([this._getArticle(), this._getUserLike()]).then(
+      axios.spread((articles, likes) => {
+        // console.log("likessssss", likes.dwVote, likes.data.dwVote);
+
         this.setState({
           loadL: false,
-          articleData: res.data,
-          renderI: true
+          articleData: articles.data,
+          renderI: true,
+          dwVote: likes.data.dwVote,
+          upVote: likes.data.upVote
         });
       })
-      .catch(error => {
-        this.setState({ error, loadL: false });
-      });
+    );
   };
 
   _getArticle = () => {
     /* 1. Navigate to the Details route with params */
 
-    this.setState({ loadL: true });
+    // this.setState({ loadL: true });
 
-    axios
-      .get("https://youthevoice.com/getarticles", {
-        params: {
-          articleId: this.props.navigation.getParam("articleId", "")
-        }
-      })
-      .then(res => {
-        console.log(res.data);
-        this.setState({
-          loadL: false,
-          articleData: res.data,
-          renderI: true
-        });
-      })
-      .catch(error => {
-        this.setState({ error, loadL: false });
-      });
+    return axios.get("https://youthevoice.com/getarticles", {
+      params: {
+        articleId: this.props.navigation.getParam("articleId", "")
+      }
+    });
+  };
+
+  _getUserLike = () => {
+    return axios.get("https://youthevoice.com/getuserlike", {
+      params: {
+        articleId: this.props.navigation.getParam("articleId", ""),
+        userId: this.props.userId
+      }
+    });
   };
 
   _keyExtractor = (item, index) => item.id;
@@ -451,9 +450,13 @@ class DetailArticle extends Component {
                   </TouchableOpacity>
 
                   <TouchableOpacity
-                    onPress={this.openUrl("403845640359795")}
-                    // "fb://page/jeevan.examwarrior/posts/403845640359795"
-                    // "https://m.facebook.com/jeevan.examwarrior/posts/403845640359795"
+                    // onPress={this.openUrl("403845640359795")}
+                    onPress={() =>
+                      this.props.navigation.navigate("ImageGrid", {
+                        articleId: this.state.articleId,
+                        screenName: "DetailArticle"
+                      })
+                    }
                   >
                     <View style={styles.bottomBarItem}>
                       <Icon name="logo-facebook" size={30} />
@@ -491,7 +494,7 @@ class DetailArticle extends Component {
                             ? "ios-radio-button-on"
                             : "ios-radio-button-off"
                         }
-                        color={this.state.quiz1option1 ? "green" : "black"}
+                        color={this.state.quiz1option1 ? "#4CAF50" : "#757575"}
                         size={20}
                         style={{ paddingRight: 10 }}
                       />
@@ -499,7 +502,7 @@ class DetailArticle extends Component {
                       <Text
                         style={{
                           fontSize: 20,
-                          color: this.state.quiz1option1 ? "green" : "black"
+                          color: this.state.quiz1option1 ? "#4CAF50" : "#757575"
                         }}
                       >
                         {JSON.stringify(detailData.quiz1.option1)}
@@ -516,14 +519,14 @@ class DetailArticle extends Component {
                             ? "ios-radio-button-on"
                             : "ios-radio-button-off"
                         }
-                        color={this.state.quiz1option2 ? "green" : "black"}
+                        color={this.state.quiz1option2 ? "#4CAF50" : "#757575"}
                         size={20}
                         style={{ paddingRight: 10 }}
                       />
                       <Text
                         style={{
                           fontSize: 20,
-                          color: this.state.quiz1option2 ? "green" : "black"
+                          color: this.state.quiz1option2 ? "#4CAF50" : "#757575"
                         }}
                       >
                         {JSON.stringify(detailData.quiz1.option2)}
@@ -541,14 +544,14 @@ class DetailArticle extends Component {
                             ? "ios-radio-button-on"
                             : "ios-radio-button-off"
                         }
-                        color={this.state.quiz1option3 ? "green" : "black"}
+                        color={this.state.quiz1option3 ? "#4CAF50" : "#757575"}
                         size={20}
                         style={{ paddingRight: 10 }}
                       />
                       <Text
                         style={{
                           fontSize: 20,
-                          color: this.state.quiz1option3 ? "green" : "black"
+                          color: this.state.quiz1option3 ? "#4CAF50" : "#757575"
                         }}
                       >
                         {JSON.stringify(detailData.quiz1.option3)}
@@ -566,14 +569,14 @@ class DetailArticle extends Component {
                             ? "ios-radio-button-on"
                             : "ios-radio-button-off"
                         }
-                        color={this.state.quiz1option4 ? "green" : "black"}
+                        color={this.state.quiz1option4 ? "#4CAF50" : "#757575"}
                         size={20}
                         style={{ paddingRight: 10 }}
                       />
                       <Text
                         style={{
                           fontSize: 20,
-                          color: this.state.quiz1option4 ? "green" : "black"
+                          color: this.state.quiz1option4 ? "#4CAF50" : "#757575"
                         }}
                       >
                         {JSON.stringify(detailData.quiz1.option4)}
@@ -632,7 +635,7 @@ class DetailArticle extends Component {
                       <Text
                         style={{
                           fontSize: 20,
-                          color: this.state.quiz1option1 ? "green" : "black"
+                          color: this.state.quiz1option1 ? "#4CAF50" : "#757575"
                         }}
                       >
                         {JSON.stringify(detailData.quiz1.option1)}
@@ -650,7 +653,7 @@ class DetailArticle extends Component {
                       <Text
                         style={{
                           fontSize: 20,
-                          color: this.state.quiz1option2 ? "green" : "black"
+                          color: this.state.quiz1option2 ? "#4CAF50" : "#757575"
                         }}
                       >
                         {JSON.stringify(detailData.quiz1.option2)}
@@ -669,7 +672,7 @@ class DetailArticle extends Component {
                       <Text
                         style={{
                           fontSize: 20,
-                          color: this.state.quiz1option3 ? "green" : "black"
+                          color: this.state.quiz1option3 ? "#4CAF50" : "#757575"
                         }}
                       >
                         {JSON.stringify(detailData.quiz1.option3)}
@@ -688,7 +691,7 @@ class DetailArticle extends Component {
                       <Text
                         style={{
                           fontSize: 20,
-                          color: this.state.quiz1option4 ? "green" : "black"
+                          color: this.state.quiz1option4 ? "#4CAF50" : "#757575"
                         }}
                       >
                         {JSON.stringify(detailData.quiz1.option4)}
@@ -705,7 +708,7 @@ class DetailArticle extends Component {
                       <Text
                         style={{
                           fontSize: 20,
-                          color: this.state.quiz1option4 ? "green" : "black"
+                          color: this.state.quiz1option4 ? "#4CAF50" : "#757575"
                         }}
                       >
                         2.3k
@@ -764,7 +767,14 @@ class DetailArticle extends Component {
                     padding: 10
                   }}
                 >
-                  <TouchableOpacity onPress={this.recordVideo}>
+                  <TouchableOpacity
+                    onPress={() =>
+                      this.props.navigation.navigate("YtvVoice", {
+                        articleId: this.state.articleId,
+                        screenName: "DetailArticle"
+                      })
+                    }
+                  >
                     <View style={styles.bottomBarItem}>
                       <Icon name="md-megaphone" size={30} />
                       <Text style={{ paddingVertical: 5 }}> YTV VOICE</Text>

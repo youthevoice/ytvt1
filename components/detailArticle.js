@@ -450,9 +450,13 @@ class DetailArticle extends Component {
                   </TouchableOpacity>
 
                   <TouchableOpacity
-                    onPress={this.openUrl("403845640359795")}
-                    // "fb://page/jeevan.examwarrior/posts/403845640359795"
-                    // "https://m.facebook.com/jeevan.examwarrior/posts/403845640359795"
+                    // onPress={this.openUrl("403845640359795")}
+                    onPress={() =>
+                      this.props.navigation.navigate("ImageGrid", {
+                        articleId: this.state.articleId,
+                        screenName: "DetailArticle"
+                      })
+                    }
                   >
                     <View style={styles.bottomBarItem}>
                       <Icon name="logo-facebook" size={30} />
@@ -490,7 +494,7 @@ class DetailArticle extends Component {
                             ? "ios-radio-button-on"
                             : "ios-radio-button-off"
                         }
-                        color={this.state.quiz1option1 ? "green" : "black"}
+                        color={this.state.quiz1option1 ? "#4CAF50" : "#757575"}
                         size={20}
                         style={{ paddingRight: 10 }}
                       />
@@ -498,7 +502,7 @@ class DetailArticle extends Component {
                       <Text
                         style={{
                           fontSize: 20,
-                          color: this.state.quiz1option1 ? "green" : "black"
+                          color: this.state.quiz1option1 ? "#4CAF50" : "#757575"
                         }}
                       >
                         {JSON.stringify(detailData.quiz1.option1)}
@@ -515,14 +519,14 @@ class DetailArticle extends Component {
                             ? "ios-radio-button-on"
                             : "ios-radio-button-off"
                         }
-                        color={this.state.quiz1option2 ? "green" : "black"}
+                        color={this.state.quiz1option2 ? "#4CAF50" : "#757575"}
                         size={20}
                         style={{ paddingRight: 10 }}
                       />
                       <Text
                         style={{
                           fontSize: 20,
-                          color: this.state.quiz1option2 ? "green" : "black"
+                          color: this.state.quiz1option2 ? "#4CAF50" : "#757575"
                         }}
                       >
                         {JSON.stringify(detailData.quiz1.option2)}
@@ -540,14 +544,14 @@ class DetailArticle extends Component {
                             ? "ios-radio-button-on"
                             : "ios-radio-button-off"
                         }
-                        color={this.state.quiz1option3 ? "green" : "black"}
+                        color={this.state.quiz1option3 ? "#4CAF50" : "#757575"}
                         size={20}
                         style={{ paddingRight: 10 }}
                       />
                       <Text
                         style={{
                           fontSize: 20,
-                          color: this.state.quiz1option3 ? "green" : "black"
+                          color: this.state.quiz1option3 ? "#4CAF50" : "#757575"
                         }}
                       >
                         {JSON.stringify(detailData.quiz1.option3)}
@@ -565,14 +569,14 @@ class DetailArticle extends Component {
                             ? "ios-radio-button-on"
                             : "ios-radio-button-off"
                         }
-                        color={this.state.quiz1option4 ? "green" : "black"}
+                        color={this.state.quiz1option4 ? "#4CAF50" : "#757575"}
                         size={20}
                         style={{ paddingRight: 10 }}
                       />
                       <Text
                         style={{
                           fontSize: 20,
-                          color: this.state.quiz1option4 ? "green" : "black"
+                          color: this.state.quiz1option4 ? "#4CAF50" : "#757575"
                         }}
                       >
                         {JSON.stringify(detailData.quiz1.option4)}
@@ -631,7 +635,7 @@ class DetailArticle extends Component {
                       <Text
                         style={{
                           fontSize: 20,
-                          color: this.state.quiz1option1 ? "green" : "black"
+                          color: this.state.quiz1option1 ? "#4CAF50" : "#757575"
                         }}
                       >
                         {JSON.stringify(detailData.quiz1.option1)}
@@ -649,7 +653,7 @@ class DetailArticle extends Component {
                       <Text
                         style={{
                           fontSize: 20,
-                          color: this.state.quiz1option2 ? "green" : "black"
+                          color: this.state.quiz1option2 ? "#4CAF50" : "#757575"
                         }}
                       >
                         {JSON.stringify(detailData.quiz1.option2)}
@@ -668,7 +672,7 @@ class DetailArticle extends Component {
                       <Text
                         style={{
                           fontSize: 20,
-                          color: this.state.quiz1option3 ? "green" : "black"
+                          color: this.state.quiz1option3 ? "#4CAF50" : "#757575"
                         }}
                       >
                         {JSON.stringify(detailData.quiz1.option3)}
@@ -687,7 +691,7 @@ class DetailArticle extends Component {
                       <Text
                         style={{
                           fontSize: 20,
-                          color: this.state.quiz1option4 ? "green" : "black"
+                          color: this.state.quiz1option4 ? "#4CAF50" : "#757575"
                         }}
                       >
                         {JSON.stringify(detailData.quiz1.option4)}
@@ -704,7 +708,7 @@ class DetailArticle extends Component {
                       <Text
                         style={{
                           fontSize: 20,
-                          color: this.state.quiz1option4 ? "green" : "black"
+                          color: this.state.quiz1option4 ? "#4CAF50" : "#757575"
                         }}
                       >
                         2.3k
